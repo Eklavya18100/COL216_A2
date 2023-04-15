@@ -21,70 +21,100 @@ template <typename T>
 class List
 {
 private:
-    std::vector<T> data;
+	std::vector<T> data;
 
 public:
-    List() {}
-    ~List() {}
-    void push_back(const T &value)
-    {
-        data.push_back(value);
-    }
-    void sort()
-    {
-        std::sort(data.begin(), data.end());
-    }
-    int size() const
-    {
-        return data.size();
-    }
-    T &front()
-    {
-        return data.front();
-    }
-    void pop_front()
-    {
-        data.erase(data.begin());
-    }
-    typename std::vector<T>::iterator begin()
-    {
-        return data.begin();
-    }
-    typename std::vector<T>::iterator end()
-    {
-        return data.end();
-    }
-    typename std::vector<T>::const_iterator begin() const
-    {
-        return data.begin();
-    }
+	List() {}
+	~List() {}
+	void push_back(const T &value)
+	{
+		data.push_back(value);
+	}
+	void sort()
+	{
+		std::sort(data.begin(), data.end());
+	}
+	int size() const
+	{
+		return data.size();
+	}
+	T &front()
+	{
+		return data.front();
+	}
+	void pop_front()
+	{
+		data.erase(data.begin());
+	}
+	typename std::vector<T>::iterator begin()
+	{
+		return data.begin();
+	}
+	typename std::vector<T>::iterator end()
+	{
+		return data.end();
+	}
+	typename std::vector<T>::const_iterator begin() const
+	{
+		return data.begin();
+	}
 
-    typename std::vector<T>::const_iterator end() const
-    {
-        return data.end();
-    }
+	typename std::vector<T>::const_iterator end() const
+	{
+		return data.end();
+	}
+};
+class LList
+{
+private:
+	std::vector<T> data;
+
+public:
+	List() {}
+	~List() {}
+	void push_back(const T &value)
+	{
+		data.push_back(value);
+	}
+	void sort()
+	{
+		std::sort(data.begin(), data.end());
+	}
+	int size() const
+	{
+		return data.size();
+	}
+	T &front()
+	{
+		return data.front();
+	}
+	void pop_front()
+	{
+		data.erase(data.begin());
+	}
+	typename std::vector<T>::iterator begin()
+	{
+		return data.begin();
+	}
+	typename std::vector<T>::iterator end()
+	{
+		return data.end();
+	}
+	typename std::vector<T>::const_iterator begin() const
+	{
+		return data.begin();
+	}
+
+	typename std::vector<T>::const_iterator end() const
+	{
+		return data.end();
+	}
 };
 struct MIPS_Architecture
 {
-	struct LATCH_BETWEEN_REGISTER
-	{
-		vector<string> com = {};
-		int REGISTER_ONE = 0;
-		int VALUE_ONE = 0;
-		int REGISTER_TWO = 0;
-		int VALUE_TWO = 0;
-	};
-	int REGISTERS[32] = {0}, current_PC = 0, next_Program_Counter;									// REGISTERS
-	unordered_map<string, function<int(MIPS_Architecture &, string, string, string)>> INSTRUCTIONS; // INSTRUCTIONS
-	unordered_map<string, int> registerMap, address;												// Memory
-	static const int MAX = (1 << 20);
-	int data[MAX >> 2] = {0};
-	vector<vector<string>> commands;
-	vector<int> commandCount;
-	LATCH_BETWEEN_REGISTER L2, L3, L4, L5;
 	bool stall = false;
 	int stall_UNTIL_CYCLE = 0;
-
+	vector<int> commandCount;
 	enum exit_code
 	{
 		SUCCESS = 0,
@@ -94,7 +124,22 @@ struct MIPS_Architecture
 		SYNTAX_ERROR,
 		MEMORY_ERROR
 	};
+	static const int MAX = (1 << 20);
+	int data[MAX >> 2] = {0};
+	vector<vector<string>> commands;
+	int REGISTERS[32] = {0}, current_PC = 0, next_Program_Counter;									// REGISTERS
+	unordered_map<string, function<int(MIPS_Architecture &, string, string, string)>> INSTRUCTIONS; // INSTRUCTIONS
+	unordered_map<string, int> registerMap, address;												// Memory
 
+	struct LATCH_BETWEEN_REGISTER
+	{
+		vector<string> com = {};
+		int REGISTER_ONE = 0;
+		int VALUE_ONE = 0;
+		int REGISTER_TWO = 0;
+		int VALUE_TWO = 0;
+	};
+	LATCH_BETWEEN_REGISTER L2, L3, L4, L5;
 	// constructor to initialise the instruction set
 	MIPS_Architecture(ifstream &file)
 	{
@@ -124,9 +169,14 @@ struct MIPS_Architecture
 	}
 
 	// perform add operation
+
+	int findSum(int a,int b)
+	{
+		return a+b;
+	}
 	int add(string r1, string r2, string r3)
 	{
-		return REGISTERS[registerMap[r2]] + REGISTERS[registerMap[r3]];
+		return findSum(REGISTERS[registerMap[r2]],REGISTERS[registerMap[r3]]);
 	}
 
 	// perform subtraction operation
@@ -549,7 +599,7 @@ struct MIPS_Architecture
 
 		if (stall && stall_UNTIL_CYCLE != NUMBER_OF_CYCLES)
 		{ // done
-			// nothing happens
+		  // nothing happens
 		}
 
 		else if (stall && stall_UNTIL_CYCLE == NUMBER_OF_CYCLES)
@@ -712,8 +762,8 @@ struct MIPS_Architecture
 				}
 
 				if (stall && stall_UNTIL_CYCLE == NUMBER_OF_CYCLES + 2)
-				{	/////????????????
-					// no need
+				{ /////????????????
+				  // no need
 				}
 				else
 				{
