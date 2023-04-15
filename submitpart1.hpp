@@ -448,34 +448,34 @@ struct MIPS_Architecture
 			{
 				REGISTERS[L5.REGISTER_ONE] = L5.VALUE_ONE;
 			}
-			else if (L5.com[0] == "beq" || L5.com[0] == "bne" || L5.com[0] == "j")
+			else if (checkEqualString(L5.com[0] , "beq") || checkEqualString(L5.com[0] , "bne") || checkEqualString(L5.com[0] , "j"))
 			{
 			}
-			else if (L5.com[0] == "sw")
+			else if (checkEqualString(L5.com[0] , "sw"))
 			{
 			}
-			else if (L5.com[0] == "lw")
+			else if (checkEqualString(L5.com[0] , "lw"))
 			{
 				REGISTERS[L5.VALUE_ONE] = data[L5.VALUE_TWO]; // loading done
 			}
 			else
 			{
-				cout << "something wrong occured in stage5!!";
+				cout << "error at WB";
 			}
 		}
 
-		// marks completion of commands.
+		
 		if (CURRENT_COMMANDS_IN_PIPELINE.size() > 0 && L5.com == CURRENT_COMMANDS_IN_PIPELINE[0])
-		{ // if we found that some command has been completed in this cycle. Then remove it.
+		{ 
 			CURRENT_COMMANDS_IN_PIPELINE.erase(CURRENT_COMMANDS_IN_PIPELINE.begin());
 			LIST_OF_COMMANDS.erase(LIST_OF_COMMANDS.begin());
 		}
 
-		// stage4   ---------------------------------------------------------------
+		// ----------------------------------------------------------MEM-------------------------------
 
 		if (L4.com.size() > 0)
 		{
-			if (L4.com[0] == "sw" && L5.com != L4.com)
+			if (checkEqualString(L4.com[0] , "sw") && L5.com != L4.com)
 			{
 				L5.com = L4.com;
 				L5.REGISTER_ONE = L4.REGISTER_ONE;
@@ -483,10 +483,9 @@ struct MIPS_Architecture
 				L5.VALUE_ONE = L4.VALUE_ONE;
 				L5.VALUE_TWO = L4.VALUE_TWO;
 				SW_CONTROL_SIGNAL = true;
-				data[L5.VALUE_TWO] = L5.VALUE_ONE; // storage done
+				data[L5.VALUE_TWO] = L5.VALUE_ONE; 
 				STORE_THE_ADDRESS = L5.VALUE_TWO;
 				STORE_THE_VALUE = L5.VALUE_ONE;
-
 				cout << "1 " << L5.VALUE_TWO << " " << L5.VALUE_ONE << endl;
 			}
 			else
@@ -506,25 +505,25 @@ struct MIPS_Architecture
 		// Stage 3 ALU handling
 		if (L3.com.size() > 0)
 		{
-			if (L3.com[0] == "add")
+			if (checkEqualString(L3.com[0] , "add"))
 			{
 				L4.com = L3.com;							// command
 				L4.REGISTER_ONE = registerMap[L3.com[1]];	// register where to edit
 				L4.VALUE_ONE = L3.VALUE_ONE + L3.VALUE_TWO; // value
 			}
-			else if (L3.com[0] == "sub")
+			else if (checkEqualString(L3.com[0] , "sub"))
 			{
 				L4.com = L3.com;
 				L4.REGISTER_ONE = registerMap[L3.com[1]];
 				L4.VALUE_ONE = L3.VALUE_ONE - L3.VALUE_TWO;
 			}
-			else if (L3.com[0] == "mul")
+			else if (checkEqualString(L3.com[0] , "mul"))
 			{
 				L4.com = L3.com;
 				L4.REGISTER_ONE = registerMap[L3.com[1]];
 				L4.VALUE_ONE = L3.VALUE_ONE * L3.VALUE_TWO;
 			}
-			else if (L3.com[0] == "slt")
+			else if (checkEqualString(L3.com[0] , "slt"))
 			{
 				L4.com = L3.com;
 				L4.REGISTER_ONE = registerMap[L3.com[1]];
@@ -533,13 +532,13 @@ struct MIPS_Architecture
 					L4.VALUE_ONE = 1;
 			}
 
-			else if (L3.com[0] == "beq" || L3.com[0] == "bne" || L3.com[0] == "j")
+			else if (checkEqualString(L3.com[0] , "beq") || checkEqualString(L3.com[0] , "bne" )|| checkEqualString(L3.com[0] , "j"))
 			{
 				L4.com = L3.com; // stores the next_Program_Counter value. if -1 then the next value is current_PC+1.
-				if (L3.com[0] == "j")
+				if (checkEqualString(L3.com[0] , "j"))
 				{
 				}
-				else if (L3.com[0] == "beq")
+				else if (checkEqualString(L3.com[0] , "beq"))
 				{
 					L4.VALUE_ONE = address[L3.com[3]];
 
@@ -551,7 +550,7 @@ struct MIPS_Architecture
 						LIST_OF_COMMANDS.pop_back();
 						CURRENT_COMMANDS_IN_PIPELINE.pop_back();
 					}
-					if (L3.VALUE_ONE == L3.VALUE_TWO)
+					if (checkEqualInt( L3.VALUE_ONE , L3.VALUE_TWO))
 					{
 						current_PC = L4.VALUE_ONE;
 					}
@@ -559,7 +558,7 @@ struct MIPS_Architecture
 					L3.com.clear();
 					L2.com.clear();
 				}
-				else if (L3.com[0] == "bne")
+				else if (checkEqualString(L3.com[0] , "bne"))
 				{
 					L4.VALUE_ONE = address[L3.com[3]];
 					stall = true;
@@ -578,21 +577,21 @@ struct MIPS_Architecture
 					L2.com.clear();
 				}
 			}
-			else if (L3.com[0] == "sw")
+			else if (checkEqualString(L3.com[0] , "sw"))
 			{
 				L4.com = L3.com;
 				L4.VALUE_TWO = L3.VALUE_TWO;	   // data address
 				L4.VALUE_ONE = L3.VALUE_ONE;	   // register value
 				L4.REGISTER_ONE = L3.REGISTER_ONE; // register number
 			}
-			else if (L3.com[0] == "lw")
+			else if (checkEqualString(L3.com[0] , "lw"))
 			{
 				L4.com = L3.com;
 				L4.VALUE_TWO = L3.VALUE_TWO;		   // data address value
 				L4.VALUE_ONE = registerMap[L3.com[1]]; // register number
 				L4.REGISTER_ONE = L3.REGISTER_ONE;
 			}
-			else if (L3.com[0] == "addi")
+			else if (checkEqualString(L3.com[0] , "addi"))
 			{
 				L4.com = L3.com;
 				L4.REGISTER_ONE = L3.REGISTER_ONE;
