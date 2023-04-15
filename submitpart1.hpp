@@ -87,21 +87,41 @@ struct MIPS_Architecture
 	}
 
 	// perform subtraction operation
+	int findSub(int a,int b)
+	{
+		return a-b;
+	}
 	int sub(string r1, string r2, string r3)
 	{
-		return REGISTERS[registerMap[r2]] - REGISTERS[registerMap[r3]];
+		return findSub(REGISTERS[registerMap[r2]],REGISTERS[registerMap[r3]]);
 	}
 
 	// perform multiplication operation
+	int findMul(int a,int b)
+	{
+		return a*b;
+	}
 	int mul(string r1, string r2, string r3)
 	{
-		return REGISTERS[registerMap[r2]] * REGISTERS[registerMap[r3]];
+		return findMul(REGISTERS[registerMap[r2]] , REGISTERS[registerMap[r3]]);
 	}
 
 	// perform the beq operation
+
+	bool checkEqualInt(int a,int b)
+	{
+		return a==b;
+	}
+
+	bool checkEqualString(string a,string b)
+	{
+		return a==b;
+	}
+
 	int beq(string r1, string r2, string label)
 	{
-		return REGISTERS[registerMap[r1]] == REGISTERS[registerMap[r2]];
+		// return REGISTERS[registerMap[r1]] == REGISTERS[registerMap[r2]];
+		return checkEqualString(REGISTERS[registerMap[r1]],REGISTERS[registerMap[r2]]);
 	}
 
 	// perform the bne operation
