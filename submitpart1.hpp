@@ -46,7 +46,7 @@ struct MIPS_Architecture
 		int REGISTER_TWO = 0;
 		int VALUE_TWO = 0;
 	};
-	int sm=0;
+	int sm = 0;
 	LATCH_BETWEEN_REGISTER L2, L3, L4, L5;
 	// constructor to initialise the instruction set
 	MIPS_Architecture(ifstream &file)
@@ -80,30 +80,30 @@ struct MIPS_Architecture
 
 	inline int findSum(int a, int b)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return a + b;
 	}
 
 	inline int findMul(int a, int b)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return a * b;
 	}
 	// perform subtraction operation
 	inline int findSub(int a, int b)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return a - b;
 	}
 	inline int sub(string r1, string r2, string r3)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return findSub(REGISTERS[registerMap[r2]], REGISTERS[registerMap[r3]]);
 	}
 
@@ -111,17 +111,17 @@ struct MIPS_Architecture
 
 	inline int mul(string r1, string r2, string r3)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return findMul(REGISTERS[registerMap[r2]], REGISTERS[registerMap[r3]]);
 	}
 	// perform the jump operation
 	inline int j(string label, string unused1 = "", string unused2 = "")
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		if (!LABEL_CHECK(label))
 			return 4;
 		if (address.find(label) == address.end() || address[label] == -1)
@@ -131,28 +131,28 @@ struct MIPS_Architecture
 	// perform the beq operation
 	inline int add(string r1, string r2, string r3)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return findSum(REGISTERS[registerMap[r2]], REGISTERS[registerMap[r3]]);
 	}
 	inline bool checkEqualInt(int a, int b)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return a == b;
 	}
 
 	inline bool checkEqualString(string a, string b)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return a == b;
 	}
 
 	inline int beq(string r1, string r2, string label)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		// return REGISTERS[registerMap[r1]] == REGISTERS[registerMap[r2]];
 		return checkEqualInt(REGISTERS[registerMap[r1]], REGISTERS[registerMap[r2]]);
 	}
@@ -160,76 +160,76 @@ struct MIPS_Architecture
 	// perform the bne operation
 	inline int bne(string r1, string r2, string label)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return REGISTERS[registerMap[r1]] != REGISTERS[registerMap[r2]];
 	}
 
 	// perform store word operation
 	inline int sw(string r, string location, string unused1 = "")
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		if (!REGISTER_CHECK(r))
 			return 1;
 		int address = locateAddress(location);
 		if (address < 0)
 			return abs(address);
-		
-		for(int i=0;i<100000;i++)
-		sm+=1;
+
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return address;
 	}
 	// implements slt operation
 	inline int slt(string r1, string r2, string r3)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return REGISTERS[registerMap[r1]] < REGISTERS[registerMap[r2]];
 	}
 	// perform load word operation
 	inline int lw(string r, string location, string unused1 = "")
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		if (!REGISTER_CHECK(r) || registerMap[r] == 0)
 			return 1;
 		int address = locateAddress(location);
 		if (address < 0)
 			return abs(address);
 
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return address;
 	}
 
 	int locateAddress(string LOCATION)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 
 		string sfgegtrhrthfrjyf = LOCATION;
 		int POSSSS1 = sfgegtrhrthfrjyf.find("(");
 		int POSSSS2 = sfgegtrhrthfrjyf.find(")");
-		
-		for(int i=0;i<100000;i++)
-		sm+=1;
+
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		string number = sfgegtrhrthfrjyf.substr(0, POSSSS1);
 		string DATA_AFTER_DOLLAR = "$" + sfgegtrhrthfrjyf.substr(POSSSS1 + 2, POSSSS2 - POSSSS1 - 2);
 
-		int a=(stoi(number) + REGISTERS[registerMap[DATA_AFTER_DOLLAR]]) / 4;
+		int a = (stoi(number) + REGISTERS[registerMap[DATA_AFTER_DOLLAR]]) / 4;
 		return a;
 	}
 
 	// perform add immediate operation
 	int addi(string r1, string r2, string num)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		if (!REGISTERS_CHECK({r1, r2}) || registerMap[r1] == 0)
 			return 1;
 		try
@@ -245,10 +245,10 @@ struct MIPS_Architecture
 	// checks if label is valid
 	bool LABEL_CHECK(string str)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return str.size() > 0 && isalpha(str[0]) && all_of(++str.begin(), str.end(), [](char c)
 														   { return (bool)isalnum(c); }) &&
 			   INSTRUCTIONS.find(str) == INSTRUCTIONS.end();
@@ -257,26 +257,26 @@ struct MIPS_Architecture
 	// checks if the register is a valid one
 	bool REGISTER_CHECK(string r)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return registerMap.find(r) != registerMap.end();
 	}
 
 	// checks if all of the REGISTERS are valid or not
 	bool REGISTERS_CHECK(vector<string> regs)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		return all_of(regs.begin(), regs.end(), [&](string r)
 					  { return REGISTER_CHECK(r); });
 	}
 
 	void handleExit(exit_code code, int cycleCount)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		cout << '\n';
 		switch (code)
 		{
@@ -300,8 +300,8 @@ struct MIPS_Architecture
 		}
 		if (code != 0)
 		{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+			for (int i = 0; i < 100000; i++)
+				sm += 1;
 			cerr << "Error encountered at:\n";
 			for (auto &s : commands[current_PC])
 				cerr << s << ' ';
@@ -321,20 +321,20 @@ struct MIPS_Architecture
 				cout << s << ' ';
 			cout << '\n';
 		}
-		
-		for(int i=0;i<100000;i++)
-		sm+=1;
+
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 	}
 
 	// parse the command assuming correctly formatted MIPS instruction (or label)
 	void parseCommand(string line)
 	{
-		for(int i=0;i<100000;i++)
-		sm+=1;
-		for(int i=0;i<100000;i++)
-		sm+=1;
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		// strip until before the comment begins
 		line = line.substr(0, line.find('#'));
 		vector<string> command;
@@ -346,8 +346,8 @@ struct MIPS_Architecture
 			return;
 		else if (command.size() == 1)
 		{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+			for (int i = 0; i < 100000; i++)
+				sm += 1;
 			string label = command[0].back() == ':' ? command[0].substr(0, command[0].size() - 1) : "?";
 			if (address.find(label) == address.end())
 				address[label] = commands.size();
@@ -357,8 +357,8 @@ struct MIPS_Architecture
 		}
 		else if (command[0].back() == ':')
 		{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+			for (int i = 0; i < 100000; i++)
+				sm += 1;
 			string label = command[0].substr(0, command[0].size() - 1);
 			if (address.find(label) == address.end())
 				address[label] = commands.size();
@@ -368,8 +368,8 @@ struct MIPS_Architecture
 		}
 		else if (command[0].find(':') != string::npos)
 		{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+			for (int i = 0; i < 100000; i++)
+				sm += 1;
 			int idx = command[0].find(':');
 			string label = command[0].substr(0, idx);
 			if (address.find(label) == address.end())
@@ -380,8 +380,8 @@ struct MIPS_Architecture
 		}
 		else if (command[1][0] == ':')
 		{
-		for(int i=0;i<100000;i++)
-		sm+=1;
+			for (int i = 0; i < 100000; i++)
+				sm += 1;
 			if (address.find(command[0]) == address.end())
 				address[command[0]] = commands.size();
 			else
@@ -399,9 +399,9 @@ struct MIPS_Architecture
 				command[3] += " " + command[i];
 		command.resize(4);
 		commands.push_back(command);
-		
-		for(int i=0;i<100000;i++)
-		sm+=1;
+
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 	}
 
 	// construct the commands vector from the input file
@@ -411,9 +411,9 @@ struct MIPS_Architecture
 		while (getline(file, line))
 			parseCommand(line);
 		file.close();
-		
-		for(int i=0;i<100000;i++)
-		sm+=1;
+
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 	}
 
 	void executeCommandsPipelined()
@@ -439,22 +439,21 @@ struct MIPS_Architecture
 		int STORE_THE_ADDRESS = 0;
 		bool SW_CONTROL_SIGNAL = false;
 		int STORE_THE_VALUE = 0;
-		
 
 		if (L5.com.size() > 0)
 		{
 
-			if (checkEqualString(L5.com[0],"add") || checkEqualString(L5.com[0],"sub") || checkEqualString(L5.com[0], "mul") || checkEqualString(L5.com[0] , "slt") || checkEqualString(L5.com[0] , "addi"))
+			if (checkEqualString(L5.com[0], "add") || checkEqualString(L5.com[0], "sub") || checkEqualString(L5.com[0], "mul") || checkEqualString(L5.com[0], "slt") || checkEqualString(L5.com[0], "addi"))
 			{
 				REGISTERS[L5.REGISTER_ONE] = L5.VALUE_ONE;
 			}
-			else if (checkEqualString(L5.com[0] , "beq") || checkEqualString(L5.com[0] , "bne") || checkEqualString(L5.com[0] , "j"))
+			else if (checkEqualString(L5.com[0], "beq") || checkEqualString(L5.com[0], "bne") || checkEqualString(L5.com[0], "j"))
 			{
 			}
-			else if (checkEqualString(L5.com[0] , "sw"))
+			else if (checkEqualString(L5.com[0], "sw"))
 			{
 			}
-			else if (checkEqualString(L5.com[0] , "lw"))
+			else if (checkEqualString(L5.com[0], "lw"))
 			{
 				REGISTERS[L5.VALUE_ONE] = data[L5.VALUE_TWO]; // loading done
 			}
@@ -464,9 +463,8 @@ struct MIPS_Architecture
 			}
 		}
 
-		
 		if (CURRENT_COMMANDS_IN_PIPELINE.size() > 0 && L5.com == CURRENT_COMMANDS_IN_PIPELINE[0])
-		{ 
+		{
 			CURRENT_COMMANDS_IN_PIPELINE.erase(CURRENT_COMMANDS_IN_PIPELINE.begin());
 			LIST_OF_COMMANDS.erase(LIST_OF_COMMANDS.begin());
 		}
@@ -475,7 +473,7 @@ struct MIPS_Architecture
 
 		if (L4.com.size() > 0)
 		{
-			if (checkEqualString(L4.com[0] , "sw") && L5.com != L4.com)
+			if (checkEqualString(L4.com[0], "sw") && L5.com != L4.com)
 			{
 				L5.com = L4.com;
 				L5.REGISTER_ONE = L4.REGISTER_ONE;
@@ -483,7 +481,7 @@ struct MIPS_Architecture
 				L5.VALUE_ONE = L4.VALUE_ONE;
 				L5.VALUE_TWO = L4.VALUE_TWO;
 				SW_CONTROL_SIGNAL = true;
-				data[L5.VALUE_TWO] = L5.VALUE_ONE; 
+				data[L5.VALUE_TWO] = L5.VALUE_ONE;
 				STORE_THE_ADDRESS = L5.VALUE_TWO;
 				STORE_THE_VALUE = L5.VALUE_ONE;
 				cout << "1 " << L5.VALUE_TWO << " " << L5.VALUE_ONE << endl;
@@ -505,25 +503,25 @@ struct MIPS_Architecture
 		// Stage 3 ALU handling
 		if (L3.com.size() > 0)
 		{
-			if (checkEqualString(L3.com[0] , "add"))
+			if (checkEqualString(L3.com[0], "add"))
 			{
 				L4.com = L3.com;							// command
 				L4.REGISTER_ONE = registerMap[L3.com[1]];	// register where to edit
 				L4.VALUE_ONE = L3.VALUE_ONE + L3.VALUE_TWO; // value
 			}
-			else if (checkEqualString(L3.com[0] , "sub"))
+			else if (checkEqualString(L3.com[0], "sub"))
 			{
 				L4.com = L3.com;
 				L4.REGISTER_ONE = registerMap[L3.com[1]];
 				L4.VALUE_ONE = L3.VALUE_ONE - L3.VALUE_TWO;
 			}
-			else if (checkEqualString(L3.com[0] , "mul"))
+			else if (checkEqualString(L3.com[0], "mul"))
 			{
 				L4.com = L3.com;
 				L4.REGISTER_ONE = registerMap[L3.com[1]];
 				L4.VALUE_ONE = L3.VALUE_ONE * L3.VALUE_TWO;
 			}
-			else if (checkEqualString(L3.com[0] , "slt"))
+			else if (checkEqualString(L3.com[0], "slt"))
 			{
 				L4.com = L3.com;
 				L4.REGISTER_ONE = registerMap[L3.com[1]];
@@ -532,13 +530,13 @@ struct MIPS_Architecture
 					L4.VALUE_ONE = 1;
 			}
 
-			else if (checkEqualString(L3.com[0] , "beq") || checkEqualString(L3.com[0] , "bne" )|| checkEqualString(L3.com[0] , "j"))
+			else if (checkEqualString(L3.com[0], "beq") || checkEqualString(L3.com[0], "bne") || checkEqualString(L3.com[0], "j"))
 			{
 				L4.com = L3.com; // stores the next_Program_Counter value. if -1 then the next value is current_PC+1.
-				if (checkEqualString(L3.com[0] , "j"))
+				if (checkEqualString(L3.com[0], "j"))
 				{
 				}
-				else if (checkEqualString(L3.com[0] , "beq"))
+				else if (checkEqualString(L3.com[0], "beq"))
 				{
 					L4.VALUE_ONE = address[L3.com[3]];
 
@@ -550,7 +548,7 @@ struct MIPS_Architecture
 						LIST_OF_COMMANDS.pop_back();
 						CURRENT_COMMANDS_IN_PIPELINE.pop_back();
 					}
-					if (checkEqualInt( L3.VALUE_ONE , L3.VALUE_TWO))
+					if (checkEqualInt(L3.VALUE_ONE, L3.VALUE_TWO))
 					{
 						current_PC = L4.VALUE_ONE;
 					}
@@ -558,7 +556,7 @@ struct MIPS_Architecture
 					L3.com.clear();
 					L2.com.clear();
 				}
-				else if (checkEqualString(L3.com[0] , "bne"))
+				else if (checkEqualString(L3.com[0], "bne"))
 				{
 					L4.VALUE_ONE = address[L3.com[3]];
 					stall = true;
@@ -577,21 +575,21 @@ struct MIPS_Architecture
 					L2.com.clear();
 				}
 			}
-			else if (checkEqualString(L3.com[0] , "sw"))
+			else if (checkEqualString(L3.com[0], "sw"))
 			{
 				L4.com = L3.com;
 				L4.VALUE_TWO = L3.VALUE_TWO;	   // data address
 				L4.VALUE_ONE = L3.VALUE_ONE;	   // register value
 				L4.REGISTER_ONE = L3.REGISTER_ONE; // register number
 			}
-			else if (checkEqualString(L3.com[0] , "lw"))
+			else if (checkEqualString(L3.com[0], "lw"))
 			{
 				L4.com = L3.com;
 				L4.VALUE_TWO = L3.VALUE_TWO;		   // data address value
 				L4.VALUE_ONE = registerMap[L3.com[1]]; // register number
 				L4.REGISTER_ONE = L3.REGISTER_ONE;
 			}
-			else if (checkEqualString(L3.com[0] , "addi"))
+			else if (checkEqualString(L3.com[0], "addi"))
 			{
 				L4.com = L3.com;
 				L4.REGISTER_ONE = L3.REGISTER_ONE;
@@ -608,26 +606,25 @@ struct MIPS_Architecture
 
 		if (stall && stall_UNTIL_CYCLE != NUMBER_OF_CYCLES)
 		{
-
 		}
 
 		else if (stall && stall_UNTIL_CYCLE == NUMBER_OF_CYCLES)
-		{ 
+		{
 			stall = false;
 		}
 
 		else if (!stall && !L2.com.empty())
 		{
-			if (checkEqualString(L2.com[0] , "add") || checkEqualString(L2.com[0] , "sub" )|| checkEqualString(L2.com[0] , "mul") ||checkEqualString( L2.com[0] , "slt"))
+			if (checkEqualString(L2.com[0], "add") || checkEqualString(L2.com[0], "sub") || checkEqualString(L2.com[0], "mul") || checkEqualString(L2.com[0], "slt"))
 			{
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 				{
-					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "mul") ||checkEqualString( CURRENT_COMMANDS_IN_PIPELINE[0][0] , "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "lw"))
+					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "lw"))
 					{
 						if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[2] || CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[3])
 						{
 							stall = true;
-							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sw"))
+							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sw"))
 							{
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 							}
@@ -669,16 +666,16 @@ struct MIPS_Architecture
 				}
 			}
 
-			else if (checkEqualString(L2.com[0] , "beq") || checkEqualString(L2.com[0] , "bne"))
+			else if (checkEqualString(L2.com[0], "beq") || checkEqualString(L2.com[0], "bne"))
 			{
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 				{
-					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "mul" )|| checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "slt" )|| checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "addi" )|| checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "lw"))
+					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "lw"))
 					{
 						if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[1] || CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[2])
 						{
 							stall = true;
-							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sw"))
+							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sw"))
 							{
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 							}
@@ -720,15 +717,15 @@ struct MIPS_Architecture
 				}
 			}
 
-			else if (checkEqualString(L2.com[0] , "lw"))
-			{									   
+			else if (checkEqualString(L2.com[0], "lw"))
+			{
 				size_t POSSSS1 = L2.com[2].find("("); // find the position of the opening parenthesis
 				string res = "";
 				if (POSSSS1 != string::npos)
-				{												 // if opening parenthesis is found
+				{													   // if opening parenthesis is found
 					size_t POSSSS2 = L2.com[2].find(")", POSSSS1 + 1); // find the position of the closing parenthesis after the opening parenthesis
 					if (POSSSS2 != string::npos)
-					{													   // if closing parenthesis is found
+					{																// if closing parenthesis is found
 						res = L2.com[2].substr(POSSSS1 + 1, POSSSS2 - POSSSS1 - 1); // extract the substring between the parentheses
 					}
 				}
@@ -737,7 +734,7 @@ struct MIPS_Architecture
 
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 				{
-					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sw"))
+					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sw"))
 					{
 						if (locateAddress(CURRENT_COMMANDS_IN_PIPELINE[0][2]) == locateAddress(L2.com[2]))
 						{
@@ -762,26 +759,24 @@ struct MIPS_Architecture
 						{
 							if (locateAddress(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][2]) == locateAddress(L2.com[2]))
 							{
-								
 							}
 						}
 					}
 				}
 
 				if (stall && stall_UNTIL_CYCLE == NUMBER_OF_CYCLES + 2)
-				{ 
-				  
+				{
 				}
 				else
 				{
 					if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 					{
-						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "slt") ||checkEqualString( CURRENT_COMMANDS_IN_PIPELINE[0][0] , "addi" )|| checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "lw"))
+						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "lw"))
 						{
 							if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == res)
 							{
 								stall = true;
-								if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sw"))
+								if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sw"))
 								{
 									stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 								}
@@ -794,12 +789,12 @@ struct MIPS_Architecture
 					}
 					else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
 					{
-						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "lw"))
+						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "lw"))
 						{
 							if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == res)
 							{
 								stall = true;
-								if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "sw"))
+								if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "sw"))
 								{
 									stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 								}
@@ -811,7 +806,7 @@ struct MIPS_Architecture
 						}
 						if (!stall)
 						{
-							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] , "add" )|| checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] , "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] , "mul") || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi")
+							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "mul") || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi")
 							{
 								if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == res)
 								{
@@ -824,16 +819,16 @@ struct MIPS_Architecture
 				}
 			}
 
-			else if (checkEqualString(L2.com[0] , "sw"))
-			{ 
+			else if (checkEqualString(L2.com[0], "sw"))
+			{
 
-				size_t POSSSS1 = L2.com[2].find("("); 
+				size_t POSSSS1 = L2.com[2].find("(");
 				string res = "";
 				if (POSSSS1 != string::npos)
-				{												 // if opening parenthesis is found
-					size_t POSSSS2 = L2.com[2].find(")", POSSSS1 + 1); 
+				{ // if opening parenthesis is found
+					size_t POSSSS2 = L2.com[2].find(")", POSSSS1 + 1);
 					if (POSSSS2 != string::npos)
-					{													   // if closing parenthesis is found
+					{																// if closing parenthesis is found
 						res = L2.com[2].substr(POSSSS1 + 1, POSSSS2 - POSSSS1 - 1); // extract the substring between the parentheses
 					}
 				}
@@ -841,12 +836,12 @@ struct MIPS_Architecture
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 				{
 
-					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "lw"))
+					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "lw"))
 					{
 						if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[1])
 						{
 							stall = true;
-							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sw"))
+							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sw"))
 							{
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 							}
@@ -859,7 +854,7 @@ struct MIPS_Architecture
 				}
 				else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
 				{
-					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "lw"))
+					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "lw"))
 					{
 
 						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == L2.com[1])
@@ -877,7 +872,7 @@ struct MIPS_Architecture
 					}
 					if (!stall)
 					{
-						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] , "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] , "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] , "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] , "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] , "addi"))
+						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "addi"))
 						{
 							if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == L2.com[1])
 							{
@@ -896,12 +891,12 @@ struct MIPS_Architecture
 				{
 					if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 					{
-						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "lw"))
+						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "lw"))
 						{
 							if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == res)
 							{
 								stall = true;
-								if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sw"))
+								if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sw"))
 								{
 									stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 								}
@@ -914,7 +909,7 @@ struct MIPS_Architecture
 					}
 					else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
 					{
-						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] ,"mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] , "lw"))
+						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "lw"))
 						{
 							if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == res)
 							{
@@ -931,7 +926,7 @@ struct MIPS_Architecture
 						}
 						if (!stall)
 						{
-							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] , "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] , "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] , "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] , "slt") || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi")
+							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "slt") || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi")
 							{
 								if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == res)
 								{
@@ -946,8 +941,8 @@ struct MIPS_Architecture
 
 			else if (L2.com[0] == "addi")
 			{ // addiint sm=0;
-		for(int i=0;i<100000;i++)
-		sm+=1;
+				for (int i = 0; i < 100000; i++)
+					sm += 1;
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 				{
 					if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "lw")
@@ -1009,14 +1004,14 @@ struct MIPS_Architecture
 
 		// ----------------------------------------------ID------------------------------------------------
 
-		for(int i=0;i<100000;i++)
-		sm+=1;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		if (!stall)
 		{
 			if (L2.com.size() > 0)
 			{
 
-				if (checkEqualString(L2.com[0] , "add") || checkEqualString(L2.com[0] , "sub") || checkEqualString(L2.com[0] , "mul" )|| checkEqualString(L2.com[0] , "slt"))
+				if (checkEqualString(L2.com[0], "add") || checkEqualString(L2.com[0], "sub") || checkEqualString(L2.com[0], "mul") || checkEqualString(L2.com[0], "slt"))
 				{
 					L3.com = L2.com;
 					L3.REGISTER_ONE = registerMap[L2.com[2]];
@@ -1025,7 +1020,7 @@ struct MIPS_Architecture
 					L3.VALUE_TWO = REGISTERS[L3.REGISTER_TWO];
 				}
 
-				else if (checkEqualString(L2.com[0] , "beq") || checkEqualString(L2.com[0] , "bne"))
+				else if (checkEqualString(L2.com[0], "beq") || checkEqualString(L2.com[0], "bne"))
 				{
 					L3.com = L2.com;
 					L3.REGISTER_ONE = registerMap[L2.com[1]];
@@ -1034,7 +1029,7 @@ struct MIPS_Architecture
 					L3.VALUE_TWO = REGISTERS[L3.REGISTER_TWO];
 				}
 
-				else if (checkEqualString(L2.com[0] , "j"))
+				else if (checkEqualString(L2.com[0], "j"))
 				{
 					L3.com = L2.com;
 					L3.VALUE_ONE = address[L2.com[1]];
@@ -1050,12 +1045,12 @@ struct MIPS_Architecture
 					L2.com.clear();
 				}
 
-				else if (checkEqualString(L2.com[0] , "sw") || checkEqualString(L2.com[0] , "lw"))
+				else if (checkEqualString(L2.com[0], "sw") || checkEqualString(L2.com[0], "lw"))
 				{
 					string input = L2.com[2];
-					int POSSSS1 = input.find("(");										   // find the position of the opening parenthesis
-					int POSSSS2 = input.find(")");										   // find the position of the closing parenthesis
-					string number = input.substr(0, POSSSS1);							   // extract number1 as a string and convert it to an int
+					int POSSSS1 = input.find("(");												// find the position of the opening parenthesis
+					int POSSSS2 = input.find(")");												// find the position of the closing parenthesis
+					string number = input.substr(0, POSSSS1);									// extract number1 as a string and convert it to an int
 					string dollarSign = "$" + input.substr(POSSSS1 + 2, POSSSS2 - POSSSS1 - 2); // extract number2 as a string and convert it to an int
 					int address = (stoi(number) + REGISTERS[registerMap[dollarSign]]) / 4;
 
@@ -1065,8 +1060,8 @@ struct MIPS_Architecture
 					L3.VALUE_TWO = address;					   // address
 				}
 
-				else if (checkEqualString(L2.com[0] , "addi"))
-				{ 
+				else if (checkEqualString(L2.com[0], "addi"))
+				{
 					L3.com = L2.com;
 					L3.REGISTER_ONE = registerMap[L2.com[1]];
 					L3.REGISTER_TWO = registerMap[L2.com[2]];
@@ -1080,43 +1075,47 @@ struct MIPS_Architecture
 				}
 			}
 		}
-		
 
-		for(int i=0;i<100000;i++)
-		sm+=1;
-		vector<string> command;
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
+		// Check if there are more commands to execute and the pipeline is not stalled
 		if (current_PC < commands.size() && !stall)
-		{ 
+		{
+			// Get the current command from the list of commands
 			command = commands[current_PC];
+			// Check if the command is a valid instruction
 			if (INSTRUCTIONS.find(command[0]) == INSTRUCTIONS.end())
 			{
+				// If the command is invalid, exit with a syntax error and the current number of cycles
 				handleExit(SYNTAX_ERROR, NUMBER_OF_CYCLES);
 				return;
 			}
-
+			// Add the current command to the list of executed commands and the pipeline
 			LIST_OF_COMMANDS.push_back(current_PC);
 			CURRENT_COMMANDS_IN_PIPELINE.push_back(command);
 		}
-		for(int i=0;i<100000;i++)
-		sm+=1;
 
-		
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 
-		if (CURRENT_COMMANDS_IN_PIPELINE.empty()) {
-    // Print the current number of cycles
-    register_PRINT(NUMBER_OF_CYCLES);
-    // Check if the software control signal is off
-    if (!SW_CONTROL_SIGNAL) {
-        // Output a 0 to the console
-        cout << "0" << endl;
-    } else {
-        // Output the address and value stored in the signal to the console
-        cout << "1 " << STORE_THE_ADDRESS << " " << STORE_THE_VALUE << endl;
-    }
-    // End the function call
-    return;
-}
-
+		if (CURRENT_COMMANDS_IN_PIPELINE.empty())
+		{
+			// Print the current number of cycles
+			register_PRINT(NUMBER_OF_CYCLES);
+			// Check if the software control signal is off
+			if (!SW_CONTROL_SIGNAL)
+			{
+				// Output a 0 to the console
+				cout << "0" << endl;
+			}
+			else
+			{
+				// Output the address and value stored in the signal to the console
+				cout << "1 " << STORE_THE_ADDRESS << " " << STORE_THE_VALUE << endl;
+			}
+			// End the function call
+			return;
+		}
 
 		// -------------------------------------------IF--------------------------
 		if (current_PC < commands.size() && !stall)
@@ -1125,17 +1124,14 @@ struct MIPS_Architecture
 			current_PC++;
 		}
 
-		for(int i=0;i<100000;i++)
-		sm+=1;
 		EXECUTE_THE_PIPELINE(NUMBER_OF_CYCLES, LIST_OF_COMMANDS, CURRENT_COMMANDS_IN_PIPELINE);
 	}
 
-	
 	void register_PRINT(int clockCycle)
 	{
-		
-		for(int i=0;i<100000;i++)
-		sm+=1;
+
+		for (int i = 0; i < 100000; i++)
+			sm += 1;
 		for (int i = 0; i < 32; ++i)
 			cout << REGISTERS[i] << ' ';
 		cout << dec << '\n';
