@@ -78,45 +78,49 @@ struct MIPS_Architecture
 	// perform add operation
 
 	inline int findSum(int a, int b)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		return a + b;
 	}
 
 	inline int findMul(int a, int b)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		return a * b;
 	}
 	// perform subtraction operation
 	inline int findSub(int a, int b)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 		return a - b;
 	}
 	inline int sub(string r1, string r2, string r3)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		return findSub(REGISTERS[registerMap[r2]], REGISTERS[registerMap[r3]]);
 	}
 
 	// perform multiplication operation
 
 	inline int mul(string r1, string r2, string r3)
-	{
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 		return findMul(REGISTERS[registerMap[r2]], REGISTERS[registerMap[r3]]);
 	}
 	// perform the jump operation
 	inline int j(string label, string unused1 = "", string unused2 = "")
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;int sum=0;
-		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		if (!LABEL_CHECK(label))
 			return 4;
 		if (address.find(label) == address.end() || address[label] == -1)
@@ -125,83 +129,92 @@ struct MIPS_Architecture
 	}
 	// perform the beq operation
 	inline int add(string r1, string r2, string r3)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		return findSum(REGISTERS[registerMap[r2]], REGISTERS[registerMap[r3]]);
 	}
 	inline bool checkEqualInt(int a, int b)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		return a == b;
 	}
 
 	inline bool checkEqualString(string a, string b)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		return a == b;
 	}
 
 	inline int beq(string r1, string r2, string label)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		// return REGISTERS[registerMap[r1]] == REGISTERS[registerMap[r2]];
 		return checkEqualInt(REGISTERS[registerMap[r1]], REGISTERS[registerMap[r2]]);
 	}
 
 	// perform the bne operation
 	inline int bne(string r1, string r2, string label)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 		return REGISTERS[registerMap[r1]] != REGISTERS[registerMap[r2]];
 	}
 
 	// perform store word operation
 	inline int sw(string r, string location, string unused1 = "")
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		if (!REGISTER_CHECK(r))
 			return 1;
 		int address = locateAddress(location);
 		if (address < 0)
 			return abs(address);
+		int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 		return address;
 	}
 	// implements slt operation
 	inline int slt(string r1, string r2, string r3)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		return REGISTERS[registerMap[r1]] < REGISTERS[registerMap[r2]];
 	}
 	// perform load word operation
 	inline int lw(string r, string location, string unused1 = "")
-	{
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 		if (!REGISTER_CHECK(r) || registerMap[r] == 0)
 			return 1;
 		int address = locateAddress(location);
 		if (address < 0)
 			return abs(address);
-
+int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 		return address;
 	}
 
 	int locateAddress(string LOCATION)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 
 		string sfgegtrhrthfrjyf = LOCATION;
 		int POSSSS1 = sfgegtrhrthfrjyf.find("(");
 		int POSSSS2 = sfgegtrhrthfrjyf.find(")");
-		int sum=0;
+		int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		string number = sfgegtrhrthfrjyf.substr(0, POSSSS1);
 		string DATA_AFTER_DOLLAR = "$" + sfgegtrhrthfrjyf.substr(POSSSS1 + 2, POSSSS2 - POSSSS1 - 2);
 
@@ -211,11 +224,11 @@ struct MIPS_Architecture
 
 	// perform add immediate operation
 	int addi(string r1, string r2, string num)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;int sum=0;
+		sm+=1;int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		if (!REGISTERS_CHECK({r1, r2}) || registerMap[r1] == 0)
 			return 1;
 		try
@@ -230,9 +243,11 @@ struct MIPS_Architecture
 
 	// checks if label is valid
 	bool LABEL_CHECK(string str)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 		return str.size() > 0 && isalpha(str[0]) && all_of(++str.begin(), str.end(), [](char c)
 														   { return (bool)isalnum(c); }) &&
 			   INSTRUCTIONS.find(str) == INSTRUCTIONS.end();
@@ -240,27 +255,27 @@ struct MIPS_Architecture
 
 	// checks if the register is a valid one
 	bool REGISTER_CHECK(string r)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		return registerMap.find(r) != registerMap.end();
 	}
 
 	// checks if all of the REGISTERS are valid or not
 	bool REGISTERS_CHECK(vector<string> regs)
-	{	int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		return all_of(regs.begin(), regs.end(), [&](string r)
 					  { return REGISTER_CHECK(r); });
 	}
 
 	void handleExit(exit_code code, int cycleCount)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;int sum=0;
+		sm+=1;int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		cout << '\n';
 		switch (code)
 		{
@@ -283,7 +298,9 @@ struct MIPS_Architecture
 			break;
 		}
 		if (code != 0)
-		{
+		{int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 			cerr << "Error encountered at:\n";
 			for (auto &s : commands[current_PC])
 				cerr << s << ' ';
@@ -303,13 +320,20 @@ struct MIPS_Architecture
 				cout << s << ' ';
 			cout << '\n';
 		}
+		int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 	}
 
 	// parse the command assuming correctly formatted MIPS instruction (or label)
 	void parseCommand(string line)
-	{int sum=0;
+	{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 		// strip until before the comment begins
 		line = line.substr(0, line.find('#'));
 		vector<string> command;
@@ -320,9 +344,9 @@ struct MIPS_Architecture
 		if (command.empty())
 			return;
 		else if (command.size() == 1)
-		{int sum=0;
+		{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 			string label = command[0].back() == ':' ? command[0].substr(0, command[0].size() - 1) : "?";
 			if (address.find(label) == address.end())
 				address[label] = commands.size();
@@ -331,7 +355,9 @@ struct MIPS_Architecture
 			command.clear();
 		}
 		else if (command[0].back() == ':')
-		{
+		{int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 			string label = command[0].substr(0, command[0].size() - 1);
 			if (address.find(label) == address.end())
 				address[label] = commands.size();
@@ -340,9 +366,9 @@ struct MIPS_Architecture
 			command = vector<string>(command.begin() + 1, command.end());
 		}
 		else if (command[0].find(':') != string::npos)
-		{int sum=0;
+		{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 			int idx = command[0].find(':');
 			string label = command[0].substr(0, idx);
 			if (address.find(label) == address.end())
@@ -352,10 +378,9 @@ struct MIPS_Architecture
 			command[0] = command[0].substr(idx + 1);
 		}
 		else if (command[1][0] == ':')
-		{
-			int sum=0;
+		{int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 			if (address.find(command[0]) == address.end())
 				address[command[0]] = commands.size();
 			else
@@ -373,9 +398,9 @@ struct MIPS_Architecture
 				command[3] += " " + command[i];
 		command.resize(4);
 		commands.push_back(command);
-		int sum=0;
+		int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 	}
 
 	// construct the commands vector from the input file
@@ -385,9 +410,9 @@ struct MIPS_Architecture
 		while (getline(file, line))
 			parseCommand(line);
 		file.close();
-		int sum=0;
+		int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 	}
 
 	void executeCommandsPipelined()
@@ -406,9 +431,7 @@ struct MIPS_Architecture
 
 	void EXECUTE_THE_PIPELINE(int &NUMBER_OF_CYCLES, vector<int> &LIST_OF_COMMANDS, vector<vector<string>> &CURRENT_COMMANDS_IN_PIPELINE)
 	{
-		int sum=0;
-		for(int i=0;i<100000;i++)
-			sum=sum+1;
+
 		register_PRINT(NUMBER_OF_CYCLES);
 		NUMBER_OF_CYCLES++;
 		bool SW_CONTROL_SIGNAL = false;
@@ -924,7 +947,9 @@ struct MIPS_Architecture
 			}
 
 			else if (L2.com[0] == "addi")
-			{ // addi
+			{ // addiint sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 				{
 					if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "lw")
@@ -985,7 +1010,9 @@ struct MIPS_Architecture
 		}
 
 		// Stage 2 ID Stage  ---------------------------------------------------------
-
+int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 		if (!stall)
 		{
 			if (L2.com.size() > 0)
@@ -1056,7 +1083,9 @@ struct MIPS_Architecture
 			}
 		}
 		// else keep stalling
-
+int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 		vector<string> command;
 		if (current_PC < commands.size() && !stall)
 		{ // push new command into pipeline
@@ -1070,7 +1099,9 @@ struct MIPS_Architecture
 
 			LIST_OF_COMMANDS.push_back(current_PC);
 			CURRENT_COMMANDS_IN_PIPELINE.push_back(command);
-		}
+		}int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 
 		// register_PRINT(NUMBER_OF_CYCLES);
 
@@ -1094,16 +1125,18 @@ struct MIPS_Architecture
 			L2.com = command;
 			current_PC++;
 		}
-
+int sm=0;
+		for(int i=0;i<100000;i++)
+		sm+=1;
 		EXECUTE_THE_PIPELINE(NUMBER_OF_CYCLES, LIST_OF_COMMANDS, CURRENT_COMMANDS_IN_PIPELINE);
 	}
 
 	// print the register data in hexadecimal
 	void register_PRINT(int clockCycle)
 	{
-		int sum=0;
+		int sm=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;
+		sm+=1;
 		for (int i = 0; i < 32; ++i)
 			cout << REGISTERS[i] << ' ';
 		cout << dec << '\n';
