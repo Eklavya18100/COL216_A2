@@ -448,29 +448,27 @@ struct MIPS_Architecture
 		int STORE_THE_VALUE = 0;
 
 		if (L5.com.size() > 0)
-{
-    if (checkEqualString(L5.com[0], "add") || checkEqualString(L5.com[0], "sub") || checkEqualString(L5.com[0], "mul") || checkEqualString(L5.com[0], "slt") || checkEqualString(L5.com[0], "addi"))
-    {
-        REGISTERS[L5.registerOne] = L5.valueOne;
-    }
-    else if (checkEqualString(L5.com[0], "beq") || checkEqualString(L5.com[0], "bne") || checkEqualString(L5.com[0], "j"))
-    {
-        // Do nothing
-    }
-    else if (checkEqualString(L5.com[0], "sw"))
-    {
-        // Do nothing
-    }
-    else if (checkEqualString(L5.com[0], "lw"))
-    {
-        REGISTERS[L5.valueOne] = data[L5.valueTwo];
-    }
-    else
-    {
-        cout << "Error at WB";
-    }
-}
+		{
 
+			if (checkEqualString(L5.com[0], "add") || checkEqualString(L5.com[0], "sub") || checkEqualString(L5.com[0], "mul") || checkEqualString(L5.com[0], "slt") || checkEqualString(L5.com[0], "addi"))
+			{
+				REGISTERS[L5.REGISTER_ONE] = L5.VALUE_ONE;
+			}
+			else if (checkEqualString(L5.com[0], "beq") || checkEqualString(L5.com[0], "bne") || checkEqualString(L5.com[0], "j"))
+			{
+			}
+			else if (checkEqualString(L5.com[0], "sw"))
+			{
+			}
+			else if (checkEqualString(L5.com[0], "lw"))
+			{
+				REGISTERS[L5.VALUE_ONE] = data[L5.VALUE_TWO]; // loading done
+			}
+			else
+			{
+				cout << "error at WB";
+			}
+		}
 
 		if (CURRENT_COMMANDS_IN_PIPELINE.size() > 0 && L5.com == CURRENT_COMMANDS_IN_PIPELINE[0])
 		{
