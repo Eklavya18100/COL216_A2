@@ -786,48 +786,52 @@ struct MIPS_Architecture
 					for (int i = 0; i < 1000; i++)
 						qq++;
 					if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2)
-{
-    string lastCommand = CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0];
-    if (lastCommand == "add" || lastCommand == "sub" || lastCommand == "mul" || lastCommand == "slt" || lastCommand == "addi" || lastCommand == "lw")
-    {
-        for (int i = 0; i < 1000; i++)
-            qq++;
-        string lastCommandOperand1 = CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1];
-        if (lastCommandOperand1 == L2.com[1] || lastCommandOperand1 == L2.com[2])
-        {
-            for (int i = 0; i < 1000; i++)
-                qq++;
-            stall = true;
-            if (lastCommand == "sw")
-            {
-                for (int i = 0; i < 1000; i++)
-                    qq++;
-                stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
-            }
-            else
-            {
-                for (int i = 0; i < 1000; i++)
-                    qq++;
-                stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
-            }
-        }
-    }
-}
-
-					if (!stall)
 					{
-						for (int i = 0; i < 1000; i++)
-							qq++;
-						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi")
+						string lastCommand = CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0];
+						if (lastCommand == "add" || lastCommand == "sub" || lastCommand == "mul" || lastCommand == "slt" || lastCommand == "addi" || lastCommand == "lw")
 						{
 							for (int i = 0; i < 1000; i++)
 								qq++;
-							if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == L2.com[1] || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == L2.com[2])
+							string lastCommandOperand1 = CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1];
+							if (lastCommandOperand1 == L2.com[1] || lastCommandOperand1 == L2.com[2])
 							{
 								for (int i = 0; i < 1000; i++)
 									qq++;
 								stall = true;
-								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+								if (lastCommand == "sw")
+								{
+									for (int i = 0; i < 1000; i++)
+										qq++;
+									stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+								}
+								else
+								{
+									for (int i = 0; i < 1000; i++)
+										qq++;
+									stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
+								}
+							}
+						}
+					}
+
+					if (!stall && CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
+					{
+						string op = CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0];
+						string arg = CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1];
+						if ((op == "add" || op == "sub" || op == "mul" || op == "slt" || op == "addi") && (arg == L2.com[1] || arg == L2.com[2]))
+						{
+							for (int i = 0; i < 1000; i++)
+							{
+								qq++;
+							}
+							stall = true;
+							stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+						}
+						else
+						{
+							for (int i = 0; i < 1000; i++)
+							{
+								qq++;
 							}
 						}
 					}
