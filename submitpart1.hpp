@@ -319,45 +319,6 @@ struct MIPS_Architecture
 		file.close();
 	}
 
-	// execute the commands sequentially (no pipelining)
-	// void executeCommandsUnpipelined()
-	// {
-	// 	if (commands.size() >= MAX / 4)
-	// 	{
-	// 		handleExit(MEMORY_ERROR, 0);
-	// 		return;
-	// 	}
-
-	// 	int clockCycles = 0;
-
-	// 	// for(auto s :commands){
-	// 	// 	for(auto k:s){
-	// 	// 		cout<<k<<"\n";
-	// 	// 	}
-	// 	// 	cout<<"\n\n";
-	// 	// }
-
-	// 	while (PCcurr < commands.size())
-	// 	{
-	// 		++clockCycles;
-	// 		vector<string> &command = commands[PCcurr];
-	// 		if (instructions.find(command[0]) == instructions.end())
-	// 		{
-	// 			handleExit(SYNTAX_ERROR, clockCycles);
-	// 			return;
-	// 		}
-	// 		exit_code ret = (exit_code) instructions[command[0]](*this, command[1], command[2], command[3]);
-	// 		if (ret != SUCCESS)
-	// 		{
-	// 			handleExit(ret, clockCycles);
-	// 			return;
-	// 		}
-	// 		++commandCount[PCcurr];														//remembers which commadn is being executed.
-	// 		PCcurr = PCnext;
-	// 		printRegisters(clockCycles);
-	// 	}
-	// 	handleExit(SUCCESS, clockCycles);
-	// }
 
 	void executeCommandsPipelined()
 	{
