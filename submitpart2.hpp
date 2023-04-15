@@ -192,15 +192,7 @@ struct MIPS_Architecture
 					  { return REGISTER_CHECK(r); });
 	}
 
-	/*
-		handle all exit codes:
-		0: correct execution
-		1: register provided is incorrect
-		2: invalid label
-		3: unaligned or invalid address
-		4: syntax error
-		5: commands exceed memory limit
-	*/
+	
 	void handleExit(exit_code code, int cycleCount)
 	{
 		cout << '\n';
@@ -325,17 +317,17 @@ struct MIPS_Architecture
 			return;
 		}
 
-		int clockCycles = 0;
-		vector<int> commandList;
-		vector<vector<string>> storecommands;
-		runCycle(clockCycles, commandList, storecommands);
+		int NUMBER_OF_CYCLES = 0;
+		vector<int> LIST_OF_COMMANDS;
+		vector<vector<string>> CURRENT_COMMANDS_IN_PIPELINE;
+		runCycle(NUMBER_OF_CYCLES, LIST_OF_COMMANDS, CURRENT_COMMANDS_IN_PIPELINE);
 	}
 
-	void runCycle(int &clockCycles, vector<int> &commandList, vector<vector<string>> &storecommands)
+	void runCycle(int &NUMBER_OF_CYCLES, vector<int> &LIST_OF_COMMANDS, vector<vector<string>> &CURRENT_COMMANDS_IN_PIPELINE)
 	{
 
-		printRegisters(clockCycles);
-		clockCycles++;
+		printRegisters(NUMBER_OF_CYCLES);
+		NUMBER_OF_CYCLES++;
 		bool storedword = false;
 		bool branch = false;
 		int storedaddress = 0;
@@ -368,10 +360,10 @@ struct MIPS_Architecture
 		}
 
 		// marks completion of commands.
-		if (storecommands.size() > 0 && L5.com == storecommands[0])
+		if (CURRENT_COMMANDS_IN_PIPELINE.size() > 0 && L5.com == CURRENT_COMMANDS_IN_PIPELINE[0])
 		{ // if we found that some command has been completed in this cycle. Then remove it.
-			storecommands.erase(storecommands.begin());
-			commandList.erase(commandList.begin());
+			CURRENT_COMMANDS_IN_PIPELINE.erase(CURRENT_COMMANDS_IN_PIPELINE.begin());
+			LIST_OF_COMMANDS.erase(LIST_OF_COMMANDS.begin());
 		}
 
 		// stage4   DM ---------------------------------------------------------------
@@ -463,10 +455,10 @@ struct MIPS_Architecture
 					// L4.VALUE_ONE=address[L3.com[1]];
 					// current_PC=L4.VALUE_ONE;
 					// stall=true;
-					// stall_UNTIL_CYCLE=clockCycles+1;
-					// if(storecommands.size()>0 && L2.com==storecommands[storecommands.size()-1]){
-					// 	commandList.pop_back();
-					// 	storecommands.pop_back();
+					// stall_UNTIL_CYCLE=NUMBER_OF_CYCLES+1;
+					// if(CURRENT_COMMANDS_IN_PIPELINE.size()>0 && L2.com==CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size()-1]){
+					// 	LIST_OF_COMMANDS.pop_back();
+					// 	CURRENT_COMMANDS_IN_PIPELINE.pop_back();
 					// }
 					// L3.com.clear();
 					// L2.com.clear();
@@ -476,12 +468,12 @@ struct MIPS_Architecture
 					L4.VALUE_ONE = address[L3.com[3]];
 
 					stall = true;
-					stall_UNTIL_CYCLE = clockCycles + 1;
-					if (storecommands.size() > 0 && L2.com == storecommands[storecommands.size() - 1])
+					stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+					if (CURRENT_COMMANDS_IN_PIPELINE.size() > 0 && L2.com == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 1])
 					{
 						current_PC--;
-						commandList.pop_back();
-						storecommands.pop_back();
+						LIST_OF_COMMANDS.pop_back();
+						CURRENT_COMMANDS_IN_PIPELINE.pop_back();
 					}
 					if (L3.VALUE_ONE == L3.VALUE_TWO)
 					{
@@ -495,12 +487,12 @@ struct MIPS_Architecture
 				{
 					L4.VALUE_ONE = address[L3.com[3]];
 					stall = true;
-					stall_UNTIL_CYCLE = clockCycles + 1;
-					if (storecommands.size() > 0 && L2.com == storecommands[storecommands.size() - 1])
+					stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+					if (CURRENT_COMMANDS_IN_PIPELINE.size() > 0 && L2.com == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 1])
 					{
 						current_PC--;
-						commandList.pop_back();
-						storecommands.pop_back();
+						LIST_OF_COMMANDS.pop_back();
+						CURRENT_COMMANDS_IN_PIPELINE.pop_back();
 					}
 					if (L3.VALUE_ONE != L3.VALUE_TWO)
 					{
@@ -538,43 +530,43 @@ struct MIPS_Architecture
 			else
 			{
 				cout << L3.com[0] << endl;
-				cout << "ALU handling something wrong came!!" << clockCycles << endl;
+				cout << "ALU handling something wrong came!!" << NUMBER_OF_CYCLES << endl;
 			}
 		}
 
 		// Stage 2 ID Stage  ---------------------------------------------------------
 		// implement stalls.
 
-		if (stall && stall_UNTIL_CYCLE == clockCycles)
+		if (stall && stall_UNTIL_CYCLE == NUMBER_OF_CYCLES)
 		{ // done
 			stall = false;
 		}
 		else if (!stall && !L2.com.empty())
 		{
-			if (storecommands.size() >= 2 && storecommands[storecommands.size() - 2][0] == "lw")
+			if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2 && CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "lw")
 			{
 				if (L2.com[0] == "add" || L2.com[0] == "sub" || L2.com[0] == "slt" || L2.com[0] == "mul")
 				{
-					if (storecommands[storecommands.size() - 2][1] == L2.com[2] || storecommands[storecommands.size() - 2][1] == L2.com[3])
+					if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == L2.com[2] || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == L2.com[3])
 					{
 						stall = true;
-						stall_UNTIL_CYCLE = clockCycles + 1;
+						stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 					}
 				}
 				else if (L2.com[0] == "addi")
 				{
-					if (storecommands[storecommands.size() - 2][1] == L2.com[2])
+					if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == L2.com[2])
 					{
 						stall = true;
-						stall_UNTIL_CYCLE = clockCycles + 1;
+						stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 					}
 				}
 				else if (L2.com[0] == "beq" || L2.com[0] == "bne")
 				{
-					if (storecommands[storecommands.size() - 2][1] == L2.com[1] || storecommands[storecommands.size() - 2][1] == L2.com[2])
+					if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == L2.com[1] || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == L2.com[2])
 					{
 						stall = true;
-						stall_UNTIL_CYCLE = clockCycles + 1;
+						stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 					}
 				}
 				else if (L2.com[0] == "sw" || L2.com[0] == "lw")
@@ -590,18 +582,18 @@ struct MIPS_Architecture
 						}
 					}
 
-					if (res == storecommands[storecommands.size() - 2][1])
+					if (res == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 					{
 						stall = true;
-						stall_UNTIL_CYCLE = clockCycles + 1;
+						stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 					}
 
 					if (!stall && L2.com[0] == "sw")
 					{ // if sw after lw.
-						if (L2.com[1] == storecommands[storecommands.size() - 2][1])
+						if (L2.com[1] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{
 							stall = true;
-							stall_UNTIL_CYCLE = clockCycles + 1;
+							stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 						}
 					}
 				}
@@ -615,7 +607,7 @@ struct MIPS_Architecture
 
 			if (L2.com[0] == "add" || L2.com[0] == "sub" || L2.com[0] == "slt" || L2.com[0] == "mul")
 			{
-				if (storecommands.size() == 1)
+				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 1)
 				{ // only one command behind.
 					L3.REG_ONE = registerMap[L2.com[2]];
 					L3.REG_TWO = registerMap[L2.com[3]];
@@ -623,15 +615,15 @@ struct MIPS_Architecture
 					L3.VALUE_TWO = REGISTERS[registerMap[L2.com[3]]];
 					// cout<<"Here !!! "<<L3.VALUE_ONE<<" "<<L3.VALUE_TWO<<endl;
 				}
-				else if (storecommands.size() >= 2)
+				else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2)
 				{
-					if (storecommands[storecommands.size() - 2][0] == "lw")
+					if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "lw")
 					{ // the command was lw.
 						L3.REG_ONE = registerMap[L2.com[2]];
 						L3.REG_TWO = registerMap[L2.com[3]];
 
 						// if second last command had some effects.
-						if (L2.com[2] == storecommands[storecommands.size() - 2][1])
+						if (L2.com[2] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
 							L3.VALUE_ONE = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -640,7 +632,7 @@ struct MIPS_Architecture
 							L3.VALUE_ONE = REGISTERS[registerMap[L2.com[2]]];
 						}
 
-						if (L2.com[3] == storecommands[storecommands.size() - 2][1])
+						if (L2.com[3] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{
 							L3.VALUE_TWO = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -650,12 +642,12 @@ struct MIPS_Architecture
 						}
 					}
 
-					else if (storecommands[storecommands.size() - 2][0] == "add" || storecommands[storecommands.size() - 2][0] == "addi" || storecommands[storecommands.size() - 2][0] == "slt" || storecommands[storecommands.size() - 2][0] == "mul" || storecommands[storecommands.size() - 2][0] == "sub")
+					else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sub")
 					{
 						L3.REG_ONE = registerMap[L2.com[2]];
 						L3.REG_TWO = registerMap[L2.com[3]];
 
-						if (L2.com[2] == storecommands[storecommands.size() - 2][1])
+						if (L2.com[2] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
 							L3.VALUE_ONE = L4.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -664,7 +656,7 @@ struct MIPS_Architecture
 							L3.VALUE_ONE = REGISTERS[registerMap[L2.com[2]]];
 						}
 
-						if (L2.com[3] == storecommands[storecommands.size() - 2][1])
+						if (L2.com[3] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{
 							L3.VALUE_TWO = L4.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -673,7 +665,7 @@ struct MIPS_Architecture
 							L3.VALUE_TWO = REGISTERS[registerMap[L2.com[3]]];
 						}
 					}
-					else if (storecommands[storecommands.size() - 2][0] == "beq" || storecommands[storecommands.size() - 2][0] == "bne" || storecommands[storecommands.size() - 2][0] == "j" || storecommands[storecommands.size() - 2][0] == "sw")
+					else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "beq" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "bne" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "j" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sw")
 					{
 						L3.REG_ONE = registerMap[L2.com[2]];
 						L3.REG_TWO = registerMap[L2.com[3]];
@@ -682,41 +674,41 @@ struct MIPS_Architecture
 					}
 
 					// if third last had some effects.
-					if (storecommands.size() >= 3)
+					if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
 					{
-						if (storecommands[storecommands.size() - 3][0] == "lw")
+						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "lw")
 						{ // the command was lw.
 							L3.REG_ONE = registerMap[L2.com[2]];
 							L3.REG_TWO = registerMap[L2.com[3]];
 
 							// if second last command had some effects.
-							if (L2.com[2] == storecommands[storecommands.size() - 3][1])
+							if (L2.com[2] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
 								L3.VALUE_ONE = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 
-							if (L2.com[3] == storecommands[storecommands.size() - 3][1])
+							if (L2.com[3] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{
 								L3.VALUE_TWO = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 
-						else if (storecommands[storecommands.size() - 3][0] == "add" || storecommands[storecommands.size() - 3][0] == "addi" || storecommands[storecommands.size() - 3][0] == "slt" || storecommands[storecommands.size() - 3][0] == "mul" || storecommands[storecommands.size() - 3][0] == "sub")
+						else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sub")
 						{
 							L3.REG_ONE = registerMap[L2.com[2]];
 							L3.REG_TWO = registerMap[L2.com[3]];
 
-							if (L2.com[2] == storecommands[storecommands.size() - 3][1])
+							if (L2.com[2] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
 								L3.VALUE_ONE = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 
-							if (L2.com[3] == storecommands[storecommands.size() - 3][1])
+							if (L2.com[3] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{
 								L3.VALUE_TWO = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
-						else if (storecommands[storecommands.size() - 3][0] == "beq" || storecommands[storecommands.size() - 3][0] == "bne" || storecommands[storecommands.size() - 3][0] == "j" || storecommands[storecommands.size() - 3][0] == "sw")
+						else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "beq" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "bne" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "j" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sw")
 						{
 							// L3.REG_ONE=registerMap[L2.com[2]];
 							// L3.REG_TWO=registerMap[L2.com[3]];
@@ -728,7 +720,7 @@ struct MIPS_Architecture
 			}
 			else if (L2.com[0] == "beq" || L2.com[0] == "bne")
 			{
-				if (storecommands.size() == 1)
+				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 1)
 				{ // only one command behind.
 
 					L3.REG_ONE = registerMap[L2.com[1]];
@@ -737,15 +729,15 @@ struct MIPS_Architecture
 					L3.VALUE_TWO = REGISTERS[registerMap[L2.com[2]]];
 				}
 
-				else if (storecommands.size() >= 2)
+				else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2)
 				{
-					if (storecommands[storecommands.size() - 2][0] == "lw")
+					if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "lw")
 					{ // the command was lw.
 						L3.REG_ONE = registerMap[L2.com[1]];
 						L3.REG_TWO = registerMap[L2.com[2]];
 
 						// if second last command had some effects.
-						if (L2.com[1] == storecommands[storecommands.size() - 2][1])
+						if (L2.com[1] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
 							L3.VALUE_ONE = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -754,7 +746,7 @@ struct MIPS_Architecture
 							L3.VALUE_ONE = REGISTERS[registerMap[L2.com[1]]];
 						}
 
-						if (L2.com[2] == storecommands[storecommands.size() - 2][1])
+						if (L2.com[2] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{
 							L3.VALUE_TWO = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -764,12 +756,12 @@ struct MIPS_Architecture
 						}
 					}
 
-					else if (storecommands[storecommands.size() - 2][0] == "add" || storecommands[storecommands.size() - 2][0] == "addi" || storecommands[storecommands.size() - 2][0] == "slt" || storecommands[storecommands.size() - 2][0] == "mul" || storecommands[storecommands.size() - 2][0] == "sub")
+					else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sub")
 					{
 						L3.REG_ONE = registerMap[L2.com[1]];
 						L3.REG_TWO = registerMap[L2.com[2]];
 
-						if (L2.com[1] == storecommands[storecommands.size() - 2][1])
+						if (L2.com[1] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
 							L3.VALUE_ONE = L4.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -778,7 +770,7 @@ struct MIPS_Architecture
 							L3.VALUE_ONE = REGISTERS[registerMap[L2.com[1]]];
 						}
 
-						if (L2.com[2] == storecommands[storecommands.size() - 2][1])
+						if (L2.com[2] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{
 							L3.VALUE_TWO = L4.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -787,7 +779,7 @@ struct MIPS_Architecture
 							L3.VALUE_TWO = REGISTERS[registerMap[L2.com[2]]];
 						}
 					}
-					else if (storecommands[storecommands.size() - 2][0] == "beq" || storecommands[storecommands.size() - 2][0] == "bne" || storecommands[storecommands.size() - 2][0] == "j" || storecommands[storecommands.size() - 2][0] == "sw")
+					else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "beq" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "bne" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "j" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sw")
 					{
 						L3.REG_ONE = registerMap[L2.com[1]];
 						L3.REG_TWO = registerMap[L2.com[2]];
@@ -796,41 +788,41 @@ struct MIPS_Architecture
 					}
 
 					// if third last had some effects.
-					if (storecommands.size() >= 3)
+					if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
 					{
-						if (storecommands[storecommands.size() - 3][0] == "lw")
+						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "lw")
 						{ // the command was lw.
 							L3.REG_ONE = registerMap[L2.com[1]];
 							L3.REG_TWO = registerMap[L2.com[2]];
 
 							// if second last command had some effects.
-							if (L2.com[1] == storecommands[storecommands.size() - 3][1])
+							if (L2.com[1] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
 								L3.VALUE_ONE = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 
-							if (L2.com[2] == storecommands[storecommands.size() - 3][1])
+							if (L2.com[2] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{
 								L3.VALUE_TWO = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 
-						else if (storecommands[storecommands.size() - 3][0] == "add" || storecommands[storecommands.size() - 3][0] == "addi" || storecommands[storecommands.size() - 3][0] == "slt" || storecommands[storecommands.size() - 3][0] == "mul" || storecommands[storecommands.size() - 3][0] == "sub")
+						else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sub")
 						{
 							L3.REG_ONE = registerMap[L2.com[1]];
 							L3.REG_TWO = registerMap[L2.com[2]];
 
-							if (L2.com[1] == storecommands[storecommands.size() - 3][1])
+							if (L2.com[1] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
 								L3.VALUE_ONE = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 
-							if (L2.com[2] == storecommands[storecommands.size() - 3][1])
+							if (L2.com[2] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{
 								L3.VALUE_TWO = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
-						else if (storecommands[storecommands.size() - 3][0] == "beq" || storecommands[storecommands.size() - 3][0] == "bne" || storecommands[storecommands.size() - 3][0] == "j" || storecommands[storecommands.size() - 3][0] == "sw")
+						else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "beq" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "bne" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "j" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sw")
 						{
 							// L3.REG_ONE=registerMap[L2.com[1]];
 							// L3.REG_TWO=registerMap[L2.com[2]];
@@ -846,18 +838,18 @@ struct MIPS_Architecture
 				L3.VALUE_ONE = address[L2.com[1]];
 				current_PC = L3.VALUE_ONE;
 				stall = true;
-				stall_UNTIL_CYCLE = clockCycles + 1;
-				if (storecommands.size() > 0 && L2.com == storecommands[storecommands.size() - 1])
+				stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+				if (CURRENT_COMMANDS_IN_PIPELINE.size() > 0 && L2.com == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 1])
 				{
-					commandList.pop_back();
-					storecommands.pop_back();
+					LIST_OF_COMMANDS.pop_back();
+					CURRENT_COMMANDS_IN_PIPELINE.pop_back();
 				}
 				L3.com.clear();
 				L2.com.clear();
 			}
 			else if (L2.com[0] == "addi")
 			{
-				if (storecommands.size() == 1)
+				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 1)
 				{ // only one command behind.
 
 					L3.REG_ONE = registerMap[L2.com[2]];
@@ -865,14 +857,14 @@ struct MIPS_Architecture
 					L3.VALUE_TWO = stoi(L2.com[3]);
 				}
 
-				else if (storecommands.size() >= 2)
+				else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2)
 				{
-					if (storecommands[storecommands.size() - 2][0] == "lw")
+					if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "lw")
 					{ // the command was lw.
 						L3.REG_ONE = registerMap[L2.com[2]];
 
 						// if second last command had some effects.
-						if (L2.com[2] == storecommands[storecommands.size() - 2][1])
+						if (L2.com[2] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
 							L3.VALUE_ONE = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -882,11 +874,11 @@ struct MIPS_Architecture
 						}
 					}
 
-					else if (storecommands[storecommands.size() - 2][0] == "add" || storecommands[storecommands.size() - 2][0] == "addi" || storecommands[storecommands.size() - 2][0] == "slt" || storecommands[storecommands.size() - 2][0] == "mul" || storecommands[storecommands.size() - 2][0] == "sub")
+					else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sub")
 					{
 						L3.REG_ONE = registerMap[L2.com[2]];
 
-						if (L2.com[2] == storecommands[storecommands.size() - 2][1])
+						if (L2.com[2] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
 							L3.VALUE_ONE = L4.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -895,7 +887,7 @@ struct MIPS_Architecture
 							L3.VALUE_ONE = REGISTERS[registerMap[L2.com[2]]];
 						}
 					}
-					else if (storecommands[storecommands.size() - 2][0] == "beq" || storecommands[storecommands.size() - 2][0] == "bne" || storecommands[storecommands.size() - 2][0] == "j" || storecommands[storecommands.size() - 2][0] == "sw")
+					else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "beq" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "bne" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "j" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sw")
 					{
 						L3.REG_ONE = registerMap[L2.com[2]];
 						L3.VALUE_ONE = REGISTERS[registerMap[L2.com[2]]];
@@ -903,29 +895,29 @@ struct MIPS_Architecture
 					}
 
 					// if third last had some effects.
-					if (storecommands.size() >= 3)
+					if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
 					{
-						if (storecommands[storecommands.size() - 3][0] == "lw")
+						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "lw")
 						{ // the command was lw.
 							L3.REG_ONE = registerMap[L2.com[2]];
 
 							// if second last command had some effects.
-							if (L2.com[2] == storecommands[storecommands.size() - 3][1])
+							if (L2.com[2] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
 								L3.VALUE_ONE = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 
-						else if (storecommands[storecommands.size() - 3][0] == "add" || storecommands[storecommands.size() - 3][0] == "addi" || storecommands[storecommands.size() - 3][0] == "slt" || storecommands[storecommands.size() - 3][0] == "mul" || storecommands[storecommands.size() - 3][0] == "sub")
+						else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sub")
 						{
 							L3.REG_ONE = registerMap[L2.com[2]];
 
-							if (L2.com[2] == storecommands[storecommands.size() - 3][1])
+							if (L2.com[2] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
 								L3.VALUE_ONE = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
-						else if (storecommands[storecommands.size() - 3][0] == "beq" || storecommands[storecommands.size() - 3][0] == "bne" || storecommands[storecommands.size() - 3][0] == "j" || storecommands[storecommands.size() - 3][0] == "sw")
+						else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "beq" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "bne" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "j" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sw")
 						{
 							// L3.REG_ONE=registerMap[L2.com[1]];
 							// L3.REG_TWO=registerMap[L2.com[2]];
@@ -949,7 +941,7 @@ struct MIPS_Architecture
 				}
 
 				// res contains the required register to be checked.
-				if (storecommands.size() == 1)
+				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 1)
 				{ // only one command behind.
 					L3.REG_ONE = registerMap[L2.com[1]];
 					L3.REG_TWO = registerMap[res];
@@ -957,15 +949,15 @@ struct MIPS_Architecture
 					L3.VALUE_ONE = REGISTERS[registerMap[res]];
 				}
 
-				else if (storecommands.size() >= 2)
+				else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2)
 				{
-					if (storecommands[storecommands.size() - 2][0] == "lw")
+					if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "lw")
 					{ // the command was lw.
 						L3.REG_ONE = registerMap[L2.com[1]];
 						L3.REG_TWO = registerMap[res];
 
 						// if second last command had some effects.
-						if (res == storecommands[storecommands.size() - 2][1])
+						if (res == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
 							L3.VALUE_TWO = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -975,12 +967,12 @@ struct MIPS_Architecture
 						}
 					}
 
-					else if (storecommands[storecommands.size() - 2][0] == "add" || storecommands[storecommands.size() - 2][0] == "addi" || storecommands[storecommands.size() - 2][0] == "slt" || storecommands[storecommands.size() - 2][0] == "mul" || storecommands[storecommands.size() - 2][0] == "sub")
+					else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sub")
 					{
 						L3.REG_ONE = registerMap[L2.com[1]];
 						L3.REG_TWO = registerMap[res];
 
-						if (res == storecommands[storecommands.size() - 2][1])
+						if (res == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
 							L3.VALUE_TWO = L4.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -989,38 +981,38 @@ struct MIPS_Architecture
 							L3.VALUE_TWO = REGISTERS[registerMap[res]];
 						}
 					}
-					else if (storecommands[storecommands.size() - 2][0] == "beq" || storecommands[storecommands.size() - 2][0] == "bne" || storecommands[storecommands.size() - 2][0] == "j" || storecommands[storecommands.size() - 2][0] == "sw")
+					else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "beq" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "bne" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "j" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sw")
 					{
 						L3.REG_ONE = registerMap[L2.com[1]];
 						L3.REG_TWO = registerMap[res];
 					}
 
 					// if third last had some effects.
-					if (storecommands.size() >= 3)
+					if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
 					{
-						if (storecommands[storecommands.size() - 3][0] == "lw")
+						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "lw")
 						{ // the command was lw.
 							L3.REG_ONE = registerMap[L2.com[1]];
 							L3.REG_TWO = registerMap[res];
 
 							// if second last command had some effects.
-							if (res == storecommands[storecommands.size() - 3][1])
+							if (res == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
 								L3.VALUE_TWO = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 
-						else if (storecommands[storecommands.size() - 3][0] == "add" || storecommands[storecommands.size() - 3][0] == "addi" || storecommands[storecommands.size() - 3][0] == "slt" || storecommands[storecommands.size() - 3][0] == "mul" || storecommands[storecommands.size() - 3][0] == "sub")
+						else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sub")
 						{
 							L3.REG_ONE = registerMap[L2.com[1]];
 							L3.REG_TWO = registerMap[res];
 
-							if (res == storecommands[storecommands.size() - 3][1])
+							if (res == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
 								L3.VALUE_ONE = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
-						else if (storecommands[storecommands.size() - 3][0] == "beq" || storecommands[storecommands.size() - 3][0] == "bne" || storecommands[storecommands.size() - 3][0] == "j" || storecommands[storecommands.size() - 3][0] == "sw")
+						else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "beq" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "bne" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "j" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sw")
 						{
 						}
 					}
@@ -1041,7 +1033,7 @@ struct MIPS_Architecture
 					}
 				}
 
-				if (storecommands.size() == 1)
+				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 1)
 				{ // only one command behind.
 
 					L3.REG_ONE = registerMap[L2.com[1]];
@@ -1050,15 +1042,15 @@ struct MIPS_Architecture
 					L3.VALUE_TWO = REGISTERS[registerMap[res]];
 				}
 
-				else if (storecommands.size() >= 2)
+				else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2)
 				{
-					if (storecommands[storecommands.size() - 2][0] == "lw")
+					if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "lw")
 					{ // the command was lw.
 						L3.REG_ONE = registerMap[L2.com[1]];
 						L3.REG_TWO = registerMap[res];
 
 						// if second last command had some effects.
-						if (L2.com[1] == storecommands[storecommands.size() - 2][1])
+						if (L2.com[1] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
 							L3.VALUE_ONE = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -1067,7 +1059,7 @@ struct MIPS_Architecture
 							L3.VALUE_ONE = REGISTERS[registerMap[L2.com[1]]];
 						}
 
-						if (res == storecommands[storecommands.size() - 2][1])
+						if (res == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{
 							L3.VALUE_TWO = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -1077,12 +1069,12 @@ struct MIPS_Architecture
 						}
 					}
 
-					else if (storecommands[storecommands.size() - 2][0] == "add" || storecommands[storecommands.size() - 2][0] == "addi" || storecommands[storecommands.size() - 2][0] == "slt" || storecommands[storecommands.size() - 2][0] == "mul" || storecommands[storecommands.size() - 2][0] == "sub")
+					else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sub")
 					{
 						L3.REG_ONE = registerMap[L2.com[1]];
 						L3.REG_TWO = registerMap[res];
 
-						if (L2.com[1] == storecommands[storecommands.size() - 2][1])
+						if (L2.com[1] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
 							L3.VALUE_ONE = L4.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -1091,7 +1083,7 @@ struct MIPS_Architecture
 							L3.VALUE_ONE = REGISTERS[registerMap[L2.com[1]]];
 						}
 
-						if (res == storecommands[storecommands.size() - 2][1])
+						if (res == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1])
 						{
 							L3.VALUE_TWO = L4.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 						}
@@ -1100,7 +1092,7 @@ struct MIPS_Architecture
 							L3.VALUE_TWO = REGISTERS[registerMap[res]];
 						}
 					}
-					else if (storecommands[storecommands.size() - 2][0] == "beq" || storecommands[storecommands.size() - 2][0] == "bne" || storecommands[storecommands.size() - 2][0] == "j" || storecommands[storecommands.size() - 2][0] == "sw")
+					else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "beq" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "bne" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "j" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sw")
 					{
 						L3.REG_ONE = registerMap[L2.com[1]];
 						L3.REG_TWO = registerMap[res];
@@ -1109,41 +1101,41 @@ struct MIPS_Architecture
 					}
 
 					// if third last had some effects.
-					if (storecommands.size() >= 3)
+					if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
 					{
-						if (storecommands[storecommands.size() - 3][0] == "lw")
+						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "lw")
 						{ // the command was lw.
 							L3.REG_ONE = registerMap[L2.com[1]];
 							L3.REG_TWO = registerMap[res];
 
 							// if second last command had some effects.
-							if (L2.com[1] == storecommands[storecommands.size() - 3][1])
+							if (L2.com[1] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
 								L3.VALUE_ONE = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 
-							if (res == storecommands[storecommands.size() - 3][1])
+							if (res == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{
 								L3.VALUE_TWO = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 
-						else if (storecommands[storecommands.size() - 3][0] == "add" || storecommands[storecommands.size() - 3][0] == "addi" || storecommands[storecommands.size() - 3][0] == "slt" || storecommands[storecommands.size() - 3][0] == "mul" || storecommands[storecommands.size() - 3][0] == "sub")
+						else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sub")
 						{
 							L3.REG_ONE = registerMap[L2.com[1]];
 							L3.REG_TWO = registerMap[res];
 
-							if (L2.com[1] == storecommands[storecommands.size() - 3][1])
+							if (L2.com[1] == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
 								L3.VALUE_ONE = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 
-							if (res == storecommands[storecommands.size() - 3][1])
+							if (res == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1])
 							{
 								L3.VALUE_TWO = L5.VALUE_ONE; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
-						else if (storecommands[storecommands.size() - 3][0] == "beq" || storecommands[storecommands.size() - 3][0] == "bne" || storecommands[storecommands.size() - 3][0] == "j" || storecommands[storecommands.size() - 3][0] == "sw")
+						else if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "beq" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "bne" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "j" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sw")
 						{
 							// L3.REG_ONE=registerMap[L2.com[1]];
 							// L3.REG_TWO=registerMap[L2.com[2]];
@@ -1167,23 +1159,23 @@ struct MIPS_Architecture
 		vector<string> command;
 		if (current_PC < commands.size() && !stall)
 		{ // push new command into pipeline
-			// cout<<clockCycles<<" "<<stall<<endl;
+			// cout<<NUMBER_OF_CYCLES<<" "<<stall<<endl;
 			command = commands[current_PC];
 			if (INSTRUCTIONS.find(command[0]) == INSTRUCTIONS.end())
 			{
-				handleExit(SYNTAX_ERROR, clockCycles);
+				handleExit(SYNTAX_ERROR, NUMBER_OF_CYCLES);
 				return;
 			}
 
-			commandList.push_back(current_PC);
-			storecommands.push_back(command);
+			LIST_OF_COMMANDS.push_back(current_PC);
+			CURRENT_COMMANDS_IN_PIPELINE.push_back(command);
 		}
 
-		// printRegisters(clockCycles);
+		// printRegisters(NUMBER_OF_CYCLES);
 
-		if (storecommands.empty())
+		if (CURRENT_COMMANDS_IN_PIPELINE.empty())
 		{ // cycles are completed if no commmand left to execute.
-			printRegisters(clockCycles);
+			printRegisters(NUMBER_OF_CYCLES);
 			if (!storedword)
 			{
 				cout << "0" << endl;
@@ -1202,24 +1194,24 @@ struct MIPS_Architecture
 		}
 
 		// if(L5.com.size()>2 && L2.com.size()>2 && L3.com.size()>2){
-		// 	cout<<"We are in cycle "<<clockCycles<<" stall: "<<stall<<endl;
+		// 	cout<<"We are in cycle "<<NUMBER_OF_CYCLES<<" stall: "<<stall<<endl;
 		// 	cout<<L5.com[0]<<" "<<L5.com[1]<<" "<<L5.com[2]<<endl;
 		// 	cout<<L4.com[0]<<" "<<L4.com[1]<<" "<<L4.com[2]<<endl;
 		// 	cout<<L3.com[0]<<" "<<L3.com[1]<<" "<<L3.com[2]<<endl;
 		// }
 
-		// if(clockCycles>100){
+		// if(NUMBER_OF_CYCLES>100){
 		// 	return;
 		// }
 
 		// if(stall){
-		// 	cout<<"stall"<<" in "<<clockCycles <<" "<<L2.com[0]<<endl;
+		// 	cout<<"stall"<<" in "<<NUMBER_OF_CYCLES <<" "<<L2.com[0]<<endl;
 		// }
-		// if(clockCycles==4){
-		// 	cout<<storecommands.size()<<endl;
+		// if(NUMBER_OF_CYCLES==4){
+		// 	cout<<CURRENT_COMMANDS_IN_PIPELINE.size()<<endl;
 		// }
 
-		runCycle(clockCycles, commandList, storecommands);
+		runCycle(NUMBER_OF_CYCLES, LIST_OF_COMMANDS, CURRENT_COMMANDS_IN_PIPELINE);
 	}
 
 	// print the register data in hexadecimal
