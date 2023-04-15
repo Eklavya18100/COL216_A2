@@ -987,13 +987,13 @@ struct MIPS_Architecture
 
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 				{
-
-					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "lw"))
+					bool is_dependency = false;
+					if (std::find(std::begin({"add", "sub", "mul", "slt", "addi", "lw"}), std::end({"add", "sub", "mul", "slt", "addi", "lw"}), CURRENT_COMMANDS_IN_PIPELINE[0][0]) != std::end({"add", "sub", "mul", "slt", "addi", "lw"}))
 					{
 						if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[1])
 						{
 							stall = true;
-							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sw"))
+							if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sw")
 							{
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 							}
@@ -1006,9 +1006,9 @@ struct MIPS_Architecture
 				}
 				else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
 				{
-					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "lw"))
+					bool is_dependency = false;
+					if (std::find(std::begin({"add", "sub", "mul", "slt", "addi", "lw"}), std::end({"add", "sub", "mul", "slt", "addi", "lw"}), CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0]) != std::end({"add", "sub", "mul", "slt", "addi", "lw"}))
 					{
-
 						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == L2.com[1])
 						{
 							stall = true;
@@ -1021,16 +1021,14 @@ struct MIPS_Architecture
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
 							}
 						}
+						is_dependency = true;
 					}
-					if (!stall)
+					if (!is_dependency && std::find(std::begin({"add", "sub", "mul", "slt", "addi"}), std::end({"add", "sub", "mul", "slt", "addi"}), CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0]) != std::end({"add", "sub", "mul", "slt", "addi"}))
 					{
-						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "addi"))
+						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == L2.com[1])
 						{
-							if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == L2.com[1])
-							{
-								stall = true;
-								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
-							}
+							stall = true;
+							stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 						}
 					}
 				}
