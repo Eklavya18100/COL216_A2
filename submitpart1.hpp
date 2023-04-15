@@ -723,9 +723,27 @@ struct MIPS_Architecture
 
 					if (!stall)
 					{
-						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi")
+						int secondLastCommandIndex = CURRENT_COMMANDS_IN_PIPELINE.size() - 2;
+						string secondLastCommand = CURRENT_COMMANDS_IN_PIPELINE[secondLastCommandIndex][0];
+						if (secondLastCommand == "add" || secondLastCommand == "sub" || secondLastCommand == "mul" || secondLastCommand == "slt" || secondLastCommand == "addi" || secondLastCommand == "lw")
 						{
-							if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == L2.com[2] || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == L2.com[3])
+							string secondLastCommandArg1 = CURRENT_COMMANDS_IN_PIPELINE[secondLastCommandIndex][1];
+							if (secondLastCommandArg1 == L2.com[2] || secondLastCommandArg1 == L2.com[3])
+							{
+								stall = true;
+								stall_UNTIL_CYCLE = (secondLastCommand == "sw") ? (NUMBER_OF_CYCLES + 1) : (NUMBER_OF_CYCLES + 2);
+							}
+						}
+					}
+
+					if (!stall)
+					{
+						int thirdLastCommandIndex = CURRENT_COMMANDS_IN_PIPELINE.size() - 3;
+						string thirdLastCommand = CURRENT_COMMANDS_IN_PIPELINE[thirdLastCommandIndex][0];
+						if (thirdLastCommand == "add" || thirdLastCommand == "sub" || thirdLastCommand == "mul" || thirdLastCommand == "slt" || thirdLastCommand == "addi")
+						{
+							string thirdLastCommandArg1 = CURRENT_COMMANDS_IN_PIPELINE[thirdLastCommandIndex][1];
+							if (thirdLastCommandArg1 == L2.com[2] || thirdLastCommandArg1 == L2.com[3])
 							{
 								stall = true;
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
