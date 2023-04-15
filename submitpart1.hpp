@@ -604,31 +604,30 @@ struct MIPS_Architecture
 			}
 		}
 
-		// implement stalls.
+		// -----------------------------------------------stalls------------------------------------------------------
 
 		if (stall && stall_UNTIL_CYCLE != NUMBER_OF_CYCLES)
-		{ // done
-		  // nothing happens
+		{
+
 		}
 
 		else if (stall && stall_UNTIL_CYCLE == NUMBER_OF_CYCLES)
-		{ // done
+		{ 
 			stall = false;
 		}
 
 		else if (!stall && !L2.com.empty())
 		{
-
-			if (L2.com[0] == "add" || L2.com[0] == "sub" || L2.com[0] == "mul" || L2.com[0] == "slt")
+			if (checkEqualString(L2.com[0] , "add") || checkEqualString(L2.com[0] , "sub" )|| checkEqualString(L2.com[0] , "mul") ||checkEqualString( L2.com[0] , "slt"))
 			{
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 				{
-					if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "lw")
+					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "mul") ||checkEqualString( CURRENT_COMMANDS_IN_PIPELINE[0][0] , "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "lw"))
 					{
 						if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[2] || CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[3])
 						{
 							stall = true;
-							if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sw")
+							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sw"))
 							{
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 							}
@@ -670,16 +669,16 @@ struct MIPS_Architecture
 				}
 			}
 
-			else if (L2.com[0] == "beq" || L2.com[0] == "bne")
+			else if (checkEqualString(L2.com[0] , "beq") || checkEqualString(L2.com[0] , "bne"))
 			{
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 				{
-					if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "lw")
+					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "mul" )|| checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "slt" )|| checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "addi" )|| checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "lw"))
 					{
 						if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[1] || CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[2])
 						{
 							stall = true;
-							if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sw")
+							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0] , "sw"))
 							{
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 							}
@@ -1005,11 +1004,11 @@ struct MIPS_Architecture
 
 			else
 			{
-				cout << "something wrong happened with stalls.";
+				cout << "Error at stalls!";
 			}
 		}
 
-		// Stage 2 ID Stage  ---------------------------------------------------------
+		// ----------------------------------------------ID------------------------------------------------
 
 		for(int i=0;i<100000;i++)
 		sm+=1;
@@ -1018,7 +1017,7 @@ struct MIPS_Architecture
 			if (L2.com.size() > 0)
 			{
 
-				if (L2.com[0] == "add" || L2.com[0] == "sub" || L2.com[0] == "mul" || L2.com[0] == "slt")
+				if (checkEqualString(L2.com[0] , "add") || checkEqualString(L2.com[0] , "sub") || checkEqualString(L2.com[0] , "mul" )|| checkEqualString(L2.com[0] , "slt"))
 				{
 					L3.com = L2.com;
 					L3.REGISTER_ONE = registerMap[L2.com[2]];
@@ -1027,7 +1026,7 @@ struct MIPS_Architecture
 					L3.VALUE_TWO = REGISTERS[L3.REGISTER_TWO];
 				}
 
-				else if (L2.com[0] == "beq" || L2.com[0] == "bne")
+				else if (checkEqualString(L2.com[0] , "beq") || checkEqualString(L2.com[0] , "bne"))
 				{
 					L3.com = L2.com;
 					L3.REGISTER_ONE = registerMap[L2.com[1]];
@@ -1036,7 +1035,7 @@ struct MIPS_Architecture
 					L3.VALUE_TWO = REGISTERS[L3.REGISTER_TWO];
 				}
 
-				else if (L2.com[0] == "j")
+				else if (checkEqualString(L2.com[0] , "j"))
 				{
 					L3.com = L2.com;
 					L3.VALUE_ONE = address[L2.com[1]];
@@ -1052,7 +1051,7 @@ struct MIPS_Architecture
 					L2.com.clear();
 				}
 
-				else if (L2.com[0] == "sw" || L2.com[0] == "lw")
+				else if (checkEqualString(L2.com[0] , "sw") || checkEqualString(L2.com[0] , "lw"))
 				{
 					string input = L2.com[2];
 					int POSSSS1 = input.find("(");										   // find the position of the opening parenthesis
@@ -1067,8 +1066,8 @@ struct MIPS_Architecture
 					L3.VALUE_TWO = address;					   // address
 				}
 
-				else if (L2.com[0] == "addi")
-				{ // addi
+				else if (checkEqualString(L2.com[0] , "addi"))
+				{ 
 					L3.com = L2.com;
 					L3.REGISTER_ONE = registerMap[L2.com[1]];
 					L3.REGISTER_TWO = registerMap[L2.com[2]];
@@ -1078,18 +1077,17 @@ struct MIPS_Architecture
 
 				else
 				{
-					cout << "something wrong happened.";
+					cout << "Error";
 				}
 			}
 		}
-		// else keep stalling
+		
 
 		for(int i=0;i<100000;i++)
 		sm+=1;
 		vector<string> command;
 		if (current_PC < commands.size() && !stall)
-		{ // push new command into pipeline
-			// cout<<NUMBER_OF_CYCLES<<" "<<stall<<endl;
+		{ 
 			command = commands[current_PC];
 			if (INSTRUCTIONS.find(command[0]) == INSTRUCTIONS.end())
 			{
@@ -1103,10 +1101,10 @@ struct MIPS_Architecture
 		for(int i=0;i<100000;i++)
 		sm+=1;
 
-		// register_PRINT(NUMBER_OF_CYCLES);
+		
 
 		if (CURRENT_COMMANDS_IN_PIPELINE.empty())
-		{ // cycles are completed if no commmand left to execute.
+		{ 
 			register_PRINT(NUMBER_OF_CYCLES);
 			if (!SW_CONTROL_SIGNAL)
 			{
@@ -1119,7 +1117,7 @@ struct MIPS_Architecture
 			return;
 		}
 
-		// Stage 1 IF Stage -----------------------------------------------------
+		// -------------------------------------------IF--------------------------
 		if (current_PC < commands.size() && !stall)
 		{
 			L2.com = command;
