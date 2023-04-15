@@ -393,7 +393,7 @@ struct MIPS_Architecture
 			cout<<"0"<<endl;
 		}
 
-		// ------------------------------------------------------ALU------------------------------------------>
+		// ------------------------------------------------------ALU------------------------------------------
 		if(L3.com.size()>0){
 			if(L3.com[0]=="add"){
 				L4.com=L3.com;								//command
@@ -482,19 +482,20 @@ struct MIPS_Architecture
 
 
 
-		
+		//implement stalls.
 
 
-		if(stall && stall_UNTIL_CYCLE!= NUMBER_OF_CYCLES){				
-			/
+		if(stall && stall_UNTIL_CYCLE!= NUMBER_OF_CYCLES){					//done
+			//nothing happens
 		}
 
-		else if(stall && stall_UNTIL_CYCLE==NUMBER_OF_CYCLES){				
+		else if(stall && stall_UNTIL_CYCLE==NUMBER_OF_CYCLES){				//done
 			stall=false;
 		}
 
 
 		else if(!stall && !L2.com.empty()){
+
 
 			if(L2.com[0]=="add" || L2.com[0]=="sub" || L2.com[0]=="mul" || L2.com[0]=="slt"){
 				if(CURRENT_COMMANDS_IN_PIPELINE.size()==2){
@@ -572,13 +573,13 @@ struct MIPS_Architecture
 			}
 
 
-			else if(L2.com[0]=="lw"){   
-				size_t pos1 = L2.com[2].find("(");
+			else if(L2.com[0]=="lw"){   // neither the address must have been changed earlier, nor the register used to check the address.
+				size_t pos1 = L2.com[2].find("("); // find the position of the opening parenthesis
 				string res="";
-				if (pos1 != string::npos) { 
-					size_t pos2 = L2.com[2].find(")", pos1+1); 
-					if (pos2 != string::npos) { 
-						res = L2.com[2].substr(pos1+1, pos2-pos1-1); 
+				if (pos1 != string::npos) { // if opening parenthesis is found
+					size_t pos2 = L2.com[2].find(")", pos1+1); // find the position of the closing parenthesis after the opening parenthesis
+					if (pos2 != string::npos) { // if closing parenthesis is found
+						res = L2.com[2].substr(pos1+1, pos2-pos1-1); // extract the substring between the parentheses
 					}
 				}
 
@@ -651,13 +652,13 @@ struct MIPS_Architecture
 			}
 
 
-			else if(L2.com[0]=="sw"){  
+			else if(L2.com[0]=="sw"){   //cases are neither argument REGISTER_ONE should have been chenged earlier nor the res.
 
-				size_t pos1 = L2.com[2].find("("); 
+				size_t pos1 = L2.com[2].find("("); // find the position of the opening parenthesis
 				string res="";
-				if (pos1 != string::npos) { 
-					size_t pos2 = L2.com[2].find(")", pos1+1); 
-					if (pos2 != string::npos) { 
+				if (pos1 != string::npos) { // if opening parenthesis is found
+					size_t pos2 = L2.com[2].find(")", pos1+1); // find the position of the closing parenthesis after the opening parenthesis
+					if (pos2 != string::npos) { // if closing parenthesis is found
 						res = L2.com[2].substr(pos1+1, pos2-pos1-1); // extract the substring between the parentheses
 					}
 				}
