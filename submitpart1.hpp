@@ -78,27 +78,27 @@ struct MIPS_Architecture
 	// perform add operation
 
 	inline int findSum(int a, int b)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		return a + b;
 	}
 
 	inline int findMul(int a, int b)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		return a * b;
 	}
 	// perform subtraction operation
 	inline int findSub(int a, int b)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		return a - b;
 	}
 	inline int sub(string r1, string r2, string r3)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		return findSub(REGISTERS[registerMap[r2]], REGISTERS[registerMap[r3]]);
@@ -112,9 +112,9 @@ struct MIPS_Architecture
 	}
 	// perform the jump operation
 	inline int j(string label, string unused1 = "", string unused2 = "")
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;int sm=0;
+			sum=sum+1;int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		if (!LABEL_CHECK(label))
@@ -125,27 +125,27 @@ struct MIPS_Architecture
 	}
 	// perform the beq operation
 	inline int add(string r1, string r2, string r3)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		return findSum(REGISTERS[registerMap[r2]], REGISTERS[registerMap[r3]]);
 	}
 	inline bool checkEqualInt(int a, int b)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		return a == b;
 	}
 
 	inline bool checkEqualString(string a, string b)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		return a == b;
 	}
 
 	inline int beq(string r1, string r2, string label)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		// return REGISTERS[registerMap[r1]] == REGISTERS[registerMap[r2]];
@@ -154,7 +154,7 @@ struct MIPS_Architecture
 
 	// perform the bne operation
 	inline int bne(string r1, string r2, string label)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		return REGISTERS[registerMap[r1]] != REGISTERS[registerMap[r2]];
@@ -162,7 +162,7 @@ struct MIPS_Architecture
 
 	// perform store word operation
 	inline int sw(string r, string location, string unused1 = "")
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		if (!REGISTER_CHECK(r))
@@ -174,7 +174,7 @@ struct MIPS_Architecture
 	}
 	// implements slt operation
 	inline int slt(string r1, string r2, string r3)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		return REGISTERS[registerMap[r1]] < REGISTERS[registerMap[r2]];
@@ -192,14 +192,14 @@ struct MIPS_Architecture
 	}
 
 	int locateAddress(string LOCATION)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 
 		string sfgegtrhrthfrjyf = LOCATION;
 		int POSSSS1 = sfgegtrhrthfrjyf.find("(");
 		int POSSSS2 = sfgegtrhrthfrjyf.find(")");
-		int sm=0;
+		int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		string number = sfgegtrhrthfrjyf.substr(0, POSSSS1);
@@ -211,9 +211,9 @@ struct MIPS_Architecture
 
 	// perform add immediate operation
 	int addi(string r1, string r2, string num)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;int sm=0;
+			sum=sum+1;int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		if (!REGISTERS_CHECK({r1, r2}) || registerMap[r1] == 0)
@@ -230,7 +230,7 @@ struct MIPS_Architecture
 
 	// checks if label is valid
 	bool LABEL_CHECK(string str)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		return str.size() > 0 && isalpha(str[0]) && all_of(++str.begin(), str.end(), [](char c)
@@ -240,7 +240,7 @@ struct MIPS_Architecture
 
 	// checks if the register is a valid one
 	bool REGISTER_CHECK(string r)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		return registerMap.find(r) != registerMap.end();
@@ -248,7 +248,7 @@ struct MIPS_Architecture
 
 	// checks if all of the REGISTERS are valid or not
 	bool REGISTERS_CHECK(vector<string> regs)
-	{	int sm=0;
+	{	int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		return all_of(regs.begin(), regs.end(), [&](string r)
@@ -256,9 +256,9 @@ struct MIPS_Architecture
 	}
 
 	void handleExit(exit_code code, int cycleCount)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
-			sum=sum+1;int sm=0;
+			sum=sum+1;int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		cout << '\n';
@@ -307,7 +307,7 @@ struct MIPS_Architecture
 
 	// parse the command assuming correctly formatted MIPS instruction (or label)
 	void parseCommand(string line)
-	{int sm=0;
+	{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		// strip until before the comment begins
@@ -320,7 +320,7 @@ struct MIPS_Architecture
 		if (command.empty())
 			return;
 		else if (command.size() == 1)
-		{int sm=0;
+		{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 			string label = command[0].back() == ':' ? command[0].substr(0, command[0].size() - 1) : "?";
@@ -340,7 +340,7 @@ struct MIPS_Architecture
 			command = vector<string>(command.begin() + 1, command.end());
 		}
 		else if (command[0].find(':') != string::npos)
-		{int sm=0;
+		{int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 			int idx = command[0].find(':');
@@ -353,7 +353,7 @@ struct MIPS_Architecture
 		}
 		else if (command[1][0] == ':')
 		{
-			int sm=0;
+			int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 			if (address.find(command[0]) == address.end())
@@ -373,7 +373,7 @@ struct MIPS_Architecture
 				command[3] += " " + command[i];
 		command.resize(4);
 		commands.push_back(command);
-		int sm=0;
+		int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 	}
@@ -385,7 +385,7 @@ struct MIPS_Architecture
 		while (getline(file, line))
 			parseCommand(line);
 		file.close();
-		int sm=0;
+		int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 	}
@@ -406,7 +406,7 @@ struct MIPS_Architecture
 
 	void EXECUTE_THE_PIPELINE(int &NUMBER_OF_CYCLES, vector<int> &LIST_OF_COMMANDS, vector<vector<string>> &CURRENT_COMMANDS_IN_PIPELINE)
 	{
-		int sm=0;
+		int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		register_PRINT(NUMBER_OF_CYCLES);
@@ -1101,7 +1101,7 @@ struct MIPS_Architecture
 	// print the register data in hexadecimal
 	void register_PRINT(int clockCycle)
 	{
-		int sm=0;
+		int sum=0;
 		for(int i=0;i<100000;i++)
 			sum=sum+1;
 		for (int i = 0; i < 32; ++i)
