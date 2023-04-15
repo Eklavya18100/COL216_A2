@@ -340,10 +340,7 @@ struct MIPS_Architecture
 		if(L5.com.size()>0){
 			
 			
-			// if(NUMBER_OF_CYCLES==13){
-			// 	cout<<L5.com[0]<<L4.com[0]<<L3.com[0]<<endl;
-				
-			// }
+			
 
 
 			if(L5.com[0]=="add" || L5.com[0]=="sub" || L5.com[0]=="mul" || L5.com[0]=="slt" || L5.com[0]=="addi"){
