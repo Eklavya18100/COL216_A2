@@ -1078,6 +1078,7 @@ struct MIPS_Architecture
 
 		for (int i = 0; i < 100000; i++)
 			sm += 1;
+			vector<string> command;
 		// Check if there are more commands to execute and the pipeline is not stalled
 		if (current_PC < commands.size() && !stall)
 		{
