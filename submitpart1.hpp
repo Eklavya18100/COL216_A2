@@ -333,37 +333,58 @@ struct MIPS_Architecture
         NUMBER_OF_CYCLES++;
 		bool SW_CONTROL_SIGNAL=false;
 		bool branch=false;
-		int SW_ADDRESS=0;
-		int SW_VALUE=0;
-		-
-	// <-----------------------------------------------------------WB----------------------------------------------->
+		int storedaddress=0;
+		int storedvalue=0;
+		//stage5               ---------------------------------
+
 		if(L5.com.size()>0){
 			
+			
+			// if(NUMBER_OF_CYCLES==13){
+			// 	cout<<L5.com[0]<<L4.com[0]<<L3.com[0]<<endl;
+				
+			// }
+
+
 			if(L5.com[0]=="add" || L5.com[0]=="sub" || L5.com[0]=="mul" || L5.com[0]=="slt" || L5.com[0]=="addi"){
 					REGISTERS[L5.REGISTER_ONE]=L5.VALUE_ONE;
 			}
 			else if(L5.com[0]=="beq" || L5.com[0]=="bne" || L5.com[0]=="j"){
-				
+				// if(L5.com[0]=="j"){
+				// 	//nothing.
+				// }
+				// else if(L5.VALUE_ONE!=-1){
+				// 	current_PC=L5.VALUE_ONE;												//go to this line. current_PC changes
+				// 	CURRENT_COMMANDS_IN_PIPELINE.clear();										//clear the stored commands.
+				// 	LIST_OF_COMMANDS.clear();										//clear the LIST_OF_COMMANDS.
+				// 	register_PRINT(NUMBER_OF_CYCLES);								
+				// 	clearLatches();												//clear the latches to startover.
+        		// 	return EXECUTE_THE_PIPELINE(NUMBER_OF_CYCLES,LIST_OF_COMMANDS,CURRENT_COMMANDS_IN_PIPELINE);
+				// }
 			}
 			else if(L5.com[0]=="sw"){
-				
+				// SW_CONTROL_SIGNAL=true;
+				// data[L5.VALUE_TWO]=L5.VALUE_ONE;											//storage done
+				// storedaddress=L5.VALUE_TWO;
+				// storedvalue=L5.VALUE_ONE;
+				// cout<<"1 "<<L5.VALUE_TWO<<" "<<L5.VALUE_ONE<<endl;
 			}
 			else if(L5.com[0]=="lw"){
-				REGISTERS[L5.VALUE_ONE]=data[L5.VALUE_TWO];										
+				REGISTERS[L5.VALUE_ONE]=data[L5.VALUE_TWO];										//loading done
 			}
 			else{
-				cout<<"Error at WB";
+				cout<<"something wrong occured in stage5!!";
 			}
 		}
 
-		
-		if(CURRENT_COMMANDS_IN_PIPELINE.size()>0 && L5.com==CURRENT_COMMANDS_IN_PIPELINE[0]){						
+		//marks completion of commands.
+		if(CURRENT_COMMANDS_IN_PIPELINE.size()>0 && L5.com==CURRENT_COMMANDS_IN_PIPELINE[0]){						//if we found that some command has been completed in this cycle. Then remove it.
 			CURRENT_COMMANDS_IN_PIPELINE.erase(CURRENT_COMMANDS_IN_PIPELINE.begin());
 			LIST_OF_COMMANDS.erase(LIST_OF_COMMANDS.begin());
 		}
 
 
-		// --------------------------------------------------------MEM-------------------------------------------------
+		//stage4   ---------------------------------------------------------------
 
 
 		if(L4.com.size()>0){
@@ -374,12 +395,15 @@ struct MIPS_Architecture
 				L5.VALUE_ONE=L4.VALUE_ONE;
 				L5.VALUE_TWO=L4.VALUE_TWO;
 				SW_CONTROL_SIGNAL=true;
-				data[L5.VALUE_TWO]=L5.VALUE_ONE;											
-				SW_ADDRESS=L5.VALUE_TWO;
-				SW_VALUE=L5.VALUE_ONE;
+				data[L5.VALUE_TWO]=L5.VALUE_ONE;											//storage done
+				storedaddress=L5.VALUE_TWO;
+				storedvalue=L5.VALUE_ONE;
 				
 				cout<<"1 "<<L5.VALUE_TWO<<" "<<L5.VALUE_ONE<<endl;
-				
+				// if(CURRENT_COMMANDS_IN_PIPELINE.size()>0 && L4.com==CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size()-1]){						//if we found that some command has been completed in this cycle. Then remove it.
+				// 	CURRENT_COMMANDS_IN_PIPELINE.erase(CURRENT_COMMANDS_IN_PIPELINE.begin());
+				// 	LIST_OF_COMMANDS.erase(LIST_OF_COMMANDS.begin());
+				// }
 			}
 			else{
 				L5.com=L4.com;
@@ -393,7 +417,7 @@ struct MIPS_Architecture
 			cout<<"0"<<endl;
 		}
 
-		// ------------------------------------------------------ALU------------------------------------------
+		//Stage 3 ALU handling
 		if(L3.com.size()>0){
 			if(L3.com[0]=="add"){
 				L4.com=L3.com;								//command
@@ -419,9 +443,18 @@ struct MIPS_Architecture
 			}
 			
 			else if(L3.com[0]=="beq" || L3.com[0]=="bne" || L3.com[0]=="j"){
-				L4.com=L3.com;						
+				L4.com=L3.com;												//stores the next_Program_Counter value. if -1 then the next value is current_PC+1.
 				if(L3.com[0]=="j"){
-					
+					// L4.VALUE_ONE=address[L3.com[1]];
+					// current_PC=L4.VALUE_ONE;
+					// stall=true;
+					// stall_UNTIL_CYCLE=NUMBER_OF_CYCLES+1;
+					// if(CURRENT_COMMANDS_IN_PIPELINE.size()>0 && L2.com==CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size()-1]){
+					// 	LIST_OF_COMMANDS.pop_back();
+					// 	CURRENT_COMMANDS_IN_PIPELINE.pop_back();
+					// }
+					// L3.com.clear();
+					// L2.com.clear();
 				}
 				else if(L3.com[0]=="beq"){
 					L4.VALUE_ONE=address[L3.com[3]];
@@ -882,7 +915,7 @@ struct MIPS_Architecture
 				cout<<"0"<<endl;
 			}
 			else{
-				cout<<"1 "<<SW_ADDRESS<<" "<<SW_VALUE<<endl;
+				cout<<"1 "<<storedaddress<<" "<<storedvalue<<endl;
 			}
 			return;
 		}
