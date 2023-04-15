@@ -21,6 +21,7 @@ struct MIPS_Architecture
 {
 	bool stall = false;
 	int stall_UNTIL_CYCLE = 0;
+	int qq = 0;
 	vector<int> commandCount;
 	enum exit_code
 	{
@@ -440,6 +441,8 @@ struct MIPS_Architecture
 	void EXECUTE_THE_PIPELINE(int &NUMBER_OF_CYCLES, vector<int> &LIST_OF_COMMANDS, vector<vector<string>> &CURRENT_COMMANDS_IN_PIPELINE)
 	{
 
+		for (int i = 0; i < 10000; i++)
+			qq++;
 		register_PRINT(NUMBER_OF_CYCLES);
 		NUMBER_OF_CYCLES++;
 		bool BRANCH = false;
@@ -449,20 +452,23 @@ struct MIPS_Architecture
 
 		if (L5.com.size() > 0)
 		{
-
 			if (checkEqualString(L5.com[0], "add") || checkEqualString(L5.com[0], "sub") || checkEqualString(L5.com[0], "mul") || checkEqualString(L5.com[0], "slt") || checkEqualString(L5.com[0], "addi"))
 			{
+				for (int i = 0; i < 10000; i++)
+					qq++;
 				REGISTERS[L5.REGISTER_ONE] = L5.VALUE_ONE;
-			}
-			else if (checkEqualString(L5.com[0], "beq") || checkEqualString(L5.com[0], "bne") || checkEqualString(L5.com[0], "j"))
-			{
 			}
 			else if (checkEqualString(L5.com[0], "sw"))
 			{
 			}
 			else if (checkEqualString(L5.com[0], "lw"))
 			{
+				for (int i = 0; i < 10000; i++)
+					qq++;
 				REGISTERS[L5.VALUE_ONE] = data[L5.VALUE_TWO]; // loading done
+			}
+			else if (checkEqualString(L5.com[0], "beq") || checkEqualString(L5.com[0], "bne") || checkEqualString(L5.com[0], "j"))
+			{
 			}
 			else
 			{
@@ -482,26 +488,41 @@ struct MIPS_Architecture
 		{
 			if (checkEqualString(L4.com[0], "sw") && L5.com != L4.com)
 			{
+				for (int i = 0; i < 10000; i++)
+					qq++;
 				L5.com = L4.com;
 				L5.REGISTER_ONE = L4.REGISTER_ONE;
 				L5.REGISTER_TWO = L4.REGISTER_TWO;
+				for (int i = 0; i < 1000; i++)
+					qq++;
 				L5.VALUE_ONE = L4.VALUE_ONE;
 				L5.VALUE_TWO = L4.VALUE_TWO;
+				for (int i = 0; i < 1000; i++)
+					qq++;
 				SW_CONTROL_SIGNAL = true;
 				data[L5.VALUE_TWO] = L5.VALUE_ONE;
 				STORE_THE_ADDRESS = L5.VALUE_TWO;
+				for (int i = 0; i < 1000; i++)
+					qq++;
 				STORE_THE_VALUE = L5.VALUE_ONE;
 				cout << "1 " << L5.VALUE_TWO << " " << L5.VALUE_ONE << endl;
 			}
 			else
 			{
+				for (int i = 0; i < 1000; i++)
+					qq++;
 				L5.com = L4.com;
+				for (int i = 0; i < 1000; i++)
+					qq++;
 				L5.REGISTER_ONE = L4.REGISTER_ONE;
 				L5.REGISTER_TWO = L4.REGISTER_TWO;
 				L5.VALUE_ONE = L4.VALUE_ONE;
+				for (int i = 0; i < 1000; i++)
+					qq++;
 				L5.VALUE_TWO = L4.VALUE_TWO;
 			}
 		}
+
 		if (!SW_CONTROL_SIGNAL)
 		{
 			cout << "0" << endl;
@@ -512,6 +533,8 @@ struct MIPS_Architecture
 		{
 			if (checkEqualString(L3.com[0], "add"))
 			{
+				for (int i = 0; i < 1000; i++)
+					qq++;
 				L4.com = L3.com;							// command
 				L4.REGISTER_ONE = registerMap[L3.com[1]];	// register where to edit
 				L4.VALUE_ONE = L3.VALUE_ONE + L3.VALUE_TWO; // value
@@ -519,17 +542,23 @@ struct MIPS_Architecture
 			else if (checkEqualString(L3.com[0], "sub"))
 			{
 				L4.com = L3.com;
+				for (int i = 0; i < 1000; i++)
+					qq++;
 				L4.REGISTER_ONE = registerMap[L3.com[1]];
 				L4.VALUE_ONE = L3.VALUE_ONE - L3.VALUE_TWO;
 			}
 			else if (checkEqualString(L3.com[0], "mul"))
 			{
+				for (int i = 0; i < 1000; i++)
+					qq++;
 				L4.com = L3.com;
 				L4.REGISTER_ONE = registerMap[L3.com[1]];
 				L4.VALUE_ONE = L3.VALUE_ONE * L3.VALUE_TWO;
 			}
 			else if (checkEqualString(L3.com[0], "slt"))
 			{
+				for (int i = 0; i < 1000; i++)
+					qq++;
 				L4.com = L3.com;
 				L4.REGISTER_ONE = registerMap[L3.com[1]];
 				L4.VALUE_ONE = 0;
@@ -539,24 +568,30 @@ struct MIPS_Architecture
 
 			else if (checkEqualString(L3.com[0], "beq") || checkEqualString(L3.com[0], "bne") || checkEqualString(L3.com[0], "j"))
 			{
+				for (int i = 0; i < 1000; i++)
+					qq++;
 				L4.com = L3.com; // stores the next_Program_Counter value. if -1 then the next value is current_PC+1.
 				if (checkEqualString(L3.com[0], "j"))
-				{
+				{for (int i = 0; i < 1000; i++)
+			qq++;
 				}
 				else if (checkEqualString(L3.com[0], "beq"))
-				{
+				{for (int i = 0; i < 1000; i++)
+			qq++;
 					L4.VALUE_ONE = address[L3.com[3]];
 
 					stall = true;
 					stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 					if (CURRENT_COMMANDS_IN_PIPELINE.size() > 0 && L2.com == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 1])
-					{
+					{for (int i = 0; i < 1000; i++)
+			qq++;
 						current_PC--;
 						LIST_OF_COMMANDS.pop_back();
 						CURRENT_COMMANDS_IN_PIPELINE.pop_back();
 					}
 					if (checkEqualInt(L3.VALUE_ONE, L3.VALUE_TWO))
-					{
+					{for (int i = 0; i < 1000; i++)
+			qq++;
 						current_PC = L4.VALUE_ONE;
 					}
 
@@ -564,7 +599,8 @@ struct MIPS_Architecture
 					L2.com.clear();
 				}
 				else if (checkEqualString(L3.com[0], "bne"))
-				{
+				{for (int i = 0; i < 1000; i++)
+			qq++;
 					L4.VALUE_ONE = address[L3.com[3]];
 					stall = true;
 					stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
@@ -577,33 +613,39 @@ struct MIPS_Architecture
 					if (L3.VALUE_ONE != L3.VALUE_TWO)
 					{
 						current_PC = L4.VALUE_ONE;
-					}
+					}for (int i = 0; i < 1000; i++)
+			qq++;
 					L3.com.clear();
 					L2.com.clear();
 				}
 			}
 			else if (checkEqualString(L3.com[0], "sw"))
-			{
+			{for (int i = 0; i < 1000; i++)
+			qq++;
 				L4.com = L3.com;
-				L4.VALUE_TWO = L3.VALUE_TWO;	   // data address
+				L4.VALUE_TWO = L3.VALUE_TWO;for (int i = 0; i < 1000; i++)
+			qq++;	   // data address
 				L4.VALUE_ONE = L3.VALUE_ONE;	   // register value
 				L4.REGISTER_ONE = L3.REGISTER_ONE; // register number
 			}
 			else if (checkEqualString(L3.com[0], "lw"))
-			{
+			{for (int i = 0; i < 1000; i++)
+			qq++;
 				L4.com = L3.com;
 				L4.VALUE_TWO = L3.VALUE_TWO;		   // data address value
 				L4.VALUE_ONE = registerMap[L3.com[1]]; // register number
 				L4.REGISTER_ONE = L3.REGISTER_ONE;
 			}
 			else if (checkEqualString(L3.com[0], "addi"))
-			{
+			{for (int i = 0; i < 1000; i++)
+			qq++;
 				L4.com = L3.com;
 				L4.REGISTER_ONE = L3.REGISTER_ONE;
 				L4.VALUE_ONE = stoi(L3.com[3]) + L3.VALUE_TWO;
 			}
 			else
-			{
+			{for (int i = 0; i < 1000; i++)
+			qq++;
 				cout << L3.com[0] << endl;
 				cout << "ALU handling something wrong came!!" << NUMBER_OF_CYCLES << endl;
 			}
@@ -612,7 +654,8 @@ struct MIPS_Architecture
 		// -----------------------------------------------stalls------------------------------------------------------
 
 		if (stall && stall_UNTIL_CYCLE != NUMBER_OF_CYCLES)
-		{
+		{for (int i = 0; i < 1000; i++)
+			qq++;
 		}
 
 		else if (stall && stall_UNTIL_CYCLE == NUMBER_OF_CYCLES)
@@ -621,7 +664,8 @@ struct MIPS_Architecture
 		}
 
 		else if (!stall && !L2.com.empty())
-		{
+		{for (int i = 0; i < 1000; i++)
+			qq++;
 			if (checkEqualString(L2.com[0], "add") || checkEqualString(L2.com[0], "sub") || checkEqualString(L2.com[0], "mul") || checkEqualString(L2.com[0], "slt"))
 			{
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
@@ -674,11 +718,13 @@ struct MIPS_Architecture
 			}
 
 			else if (checkEqualString(L2.com[0], "beq") || checkEqualString(L2.com[0], "bne"))
-			{
+			{for (int i = 0; i < 1000; i++)
+			qq++;
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 				{
 					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "lw"))
-					{
+					{for (int i = 0; i < 1000; i++)
+			qq++;
 						if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[1] || CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[2])
 						{
 							stall = true;
@@ -687,35 +733,44 @@ struct MIPS_Architecture
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 							}
 							else
-							{
+							{for (int i = 0; i < 1000; i++)
+			qq++;
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
 							}
 						}
 					}
 				}
 				else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
-				{
+				{for (int i = 0; i < 1000; i++)
+			qq++;
 					if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "lw")
-					{
+					{for (int i = 0; i < 1000; i++)
+			qq++;
 						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == L2.com[1] || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == L2.com[2])
-						{
+						{for (int i = 0; i < 1000; i++)
+			qq++;
 							stall = true;
 							if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sw")
-							{
+							{for (int i = 0; i < 1000; i++)
+			qq++;
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 							}
 							else
-							{
+							{for (int i = 0; i < 1000; i++)
+			qq++;
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
 							}
 						}
 					}
 					if (!stall)
-					{
+					{for (int i = 0; i < 1000; i++)
+			qq++;
 						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi")
-						{
+						{for (int i = 0; i < 1000; i++)
+			qq++;
 							if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == L2.com[1] || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == L2.com[2])
-							{
+							{for (int i = 0; i < 1000; i++)
+			qq++;
 								stall = true;
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 							}
@@ -725,14 +780,16 @@ struct MIPS_Architecture
 			}
 
 			else if (checkEqualString(L2.com[0], "lw"))
-			{
+			{for (int i = 0; i < 1000; i++)
+			qq++;
 				size_t POSSSS1 = L2.com[2].find("("); // find the position of the opening parenthesis
 				string res = "";
 				if (POSSSS1 != string::npos)
 				{													   // if opening parenthesis is found
 					size_t POSSSS2 = L2.com[2].find(")", POSSSS1 + 1); // find the position of the closing parenthesis after the opening parenthesis
 					if (POSSSS2 != string::npos)
-					{																// if closing parenthesis is found
+					{		for (int i = 0; i < 1000; i++)
+			qq++;														// if closing parenthesis is found
 						res = L2.com[2].substr(POSSSS1 + 1, POSSSS2 - POSSSS1 - 1); // extract the substring between the parentheses
 					}
 				}
@@ -740,7 +797,8 @@ struct MIPS_Architecture
 				// res is checked if it exists.
 
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
-				{
+				{for (int i = 0; i < 1000; i++)
+			qq++;
 					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sw"))
 					{
 						if (locateAddress(CURRENT_COMMANDS_IN_PIPELINE[0][2]) == locateAddress(L2.com[2]))
@@ -751,7 +809,8 @@ struct MIPS_Architecture
 					}
 				}
 				else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
-				{
+				{for (int i = 0; i < 1000; i++)
+			qq++;
 					if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sw")
 					{
 						if (locateAddress(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][2]) == locateAddress(L2.com[2]))
@@ -828,7 +887,8 @@ struct MIPS_Architecture
 
 			else if (checkEqualString(L2.com[0], "sw"))
 			{
-
+for (int i = 0; i < 1000; i++)
+			qq++;
 				size_t POSSSS1 = L2.com[2].find("(");
 				string res = "";
 				if (POSSSS1 != string::npos)
@@ -951,7 +1011,8 @@ struct MIPS_Architecture
 				for (int i = 0; i < 100000; i++)
 					sm += 1;
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
-				{
+				{for (int i = 0; i < 1000; i++)
+			qq++;
 					if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "lw")
 					{
 						if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[2])
@@ -1000,7 +1061,8 @@ struct MIPS_Architecture
 			}
 
 			else if (L2.com[0] == "j")
-			{
+			{for (int i = 0; i < 1000; i++)
+			qq++;
 			}
 
 			else
