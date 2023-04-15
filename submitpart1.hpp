@@ -1,6 +1,6 @@
 /**
  * @file MIPS_Processor.hpp
- * @author Mallika Prabhakar and Sayam Sethi
+ * @author Eklavya Agarwal
  * 
  */
 
