@@ -100,7 +100,7 @@ struct MIPS_Architecture
 			sm += 1;
 		return a - b;
 	}
-	
+
 	inline int sub(string r1, string r2, string r3)
 	{
 		for (int i = 0; i < 100000; i++)
@@ -418,7 +418,7 @@ struct MIPS_Architecture
 			sm += 1;
 	}
 
-	void executePipelinedCommands()
+	void executeCommandsPipelined()
 	{
 		// Check if the number of commands exceeds the maximum memory limit
 		if (commands.size() >= MAX / 4)
