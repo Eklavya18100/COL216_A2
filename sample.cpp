@@ -1,5 +1,5 @@
 // #include "MIPS_Processor.hpp"
-#include "5stage.hpp"
+#include "submitpart1.hpp"
 using namespace std;
 
 int main(int argc, char *argv[])
