@@ -1041,7 +1041,12 @@ struct MIPS_Architecture
 				{
 					if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 					{
-						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "lw"))
+						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "add") ||
+							checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sub") ||
+							checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "mul") ||
+							checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "slt") ||
+							checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "addi") ||
+							checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "lw"))
 						{
 							if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == res)
 							{
@@ -1059,12 +1064,17 @@ struct MIPS_Architecture
 					}
 					else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
 					{
-						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "lw"))
+						if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "add") ||
+							checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "sub") ||
+							checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "mul") ||
+							checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "slt") ||
+							checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "addi") ||
+							checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "lw"))
 						{
 							if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == res)
 							{
 								stall = true;
-								if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sw")
+								if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "sw"))
 								{
 									stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 								}
@@ -1076,7 +1086,11 @@ struct MIPS_Architecture
 						}
 						if (!stall)
 						{
-							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "slt") || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi")
+							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "add") ||
+								checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "sub") ||
+								checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "mul") ||
+								checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0], "slt") ||
+								CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi")
 							{
 								if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == res)
 								{
