@@ -435,16 +435,16 @@ struct MIPS_Architecture
 
 		register_PRINT(NUMBER_OF_CYCLES);
 		NUMBER_OF_CYCLES++;
+		bool BRANCH = false;
+		int STORE_THE_ADDRESS = 0;
 		bool SW_CONTROL_SIGNAL = false;
-		bool branch = false;
-		int storedaddress = 0;
-		int storedvalue = 0;
-		// stage5               ---------------------------------
+		int STORE_THE_VALUE = 0;
+		
 
 		if (L5.com.size() > 0)
 		{
 
-			if (L5.com[0] == "add" || L5.com[0] == "sub" || L5.com[0] == "mul" || L5.com[0] == "slt" || L5.com[0] == "addi")
+			if (checkEqualString(L5.com[0],"add") || checkEqualString(L5.com[0],"sub") || checkEqualString(L5.com[0], "mul") || checkEqualString(L5.com[0] , "slt") || checkEqualString(L5.com[0] , "addi"))
 			{
 				REGISTERS[L5.REGISTER_ONE] = L5.VALUE_ONE;
 			}
@@ -484,8 +484,8 @@ struct MIPS_Architecture
 				L5.VALUE_TWO = L4.VALUE_TWO;
 				SW_CONTROL_SIGNAL = true;
 				data[L5.VALUE_TWO] = L5.VALUE_ONE; // storage done
-				storedaddress = L5.VALUE_TWO;
-				storedvalue = L5.VALUE_ONE;
+				STORE_THE_ADDRESS = L5.VALUE_TWO;
+				STORE_THE_VALUE = L5.VALUE_ONE;
 
 				cout << "1 " << L5.VALUE_TWO << " " << L5.VALUE_ONE << endl;
 			}
@@ -1115,7 +1115,7 @@ struct MIPS_Architecture
 			}
 			else
 			{
-				cout << "1 " << storedaddress << " " << storedvalue << endl;
+				cout << "1 " << STORE_THE_ADDRESS << " " << STORE_THE_VALUE << endl;
 			}
 			return;
 		}
