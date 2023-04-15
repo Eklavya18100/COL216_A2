@@ -1102,19 +1102,21 @@ struct MIPS_Architecture
 
 		
 
-		if (CURRENT_COMMANDS_IN_PIPELINE.empty())
-		{ 
-			register_PRINT(NUMBER_OF_CYCLES);
-			if (!SW_CONTROL_SIGNAL)
-			{
-				cout << "0" << endl;
-			}
-			else
-			{
-				cout << "1 " << STORE_THE_ADDRESS << " " << STORE_THE_VALUE << endl;
-			}
-			return;
-		}
+		if (CURRENT_COMMANDS_IN_PIPELINE.empty()) {
+    // Print the current number of cycles
+    register_PRINT(NUMBER_OF_CYCLES);
+    // Check if the software control signal is off
+    if (!SW_CONTROL_SIGNAL) {
+        // Output a 0 to the console
+        cout << "0" << endl;
+    } else {
+        // Output the address and value stored in the signal to the console
+        cout << "1 " << STORE_THE_ADDRESS << " " << STORE_THE_VALUE << endl;
+    }
+    // End the function call
+    return;
+}
+
 
 		// -------------------------------------------IF--------------------------
 		if (current_PC < commands.size() && !stall)
@@ -1128,7 +1130,7 @@ struct MIPS_Architecture
 		EXECUTE_THE_PIPELINE(NUMBER_OF_CYCLES, LIST_OF_COMMANDS, CURRENT_COMMANDS_IN_PIPELINE);
 	}
 
-	// print the register data in hexadecimal
+	
 	void register_PRINT(int clockCycle)
 	{
 		
