@@ -20,7 +20,7 @@ using namespace std;
 
 struct MIPS_Architecture
 {
-	struct Latch
+	struct LATCH_BETWEEN_REGISTER
 	{
 		vector<string> com = {};
 		int reg1 = 0;
@@ -35,7 +35,7 @@ struct MIPS_Architecture
 	int data[MAX >> 2] = {0};
 	vector<vector<string>> commands;
 	vector<int> commandCount;
-	Latch L2, L3, L4, L5;
+	LATCH_BETWEEN_REGISTER L2, L3, L4, L5;
 	bool stall = false;
 	int stallTillCycle = 0;
 
@@ -431,7 +431,7 @@ struct MIPS_Architecture
 				string number = input.substr(0, pos1);							   // extract number1 as a string and convert it to an int
 				string dollarSign = "$" + input.substr(pos1 + 2, pos2 - pos1 - 2); // extract number2 as a string and convert it to an int
 
-				L5.val1 = data[(stoi(number) + L4.val2) / 4]; // latch loads value at lw.
+				L5.val1 = data[(stoi(number) + L4.val2) / 4]; // LATCH_BETWEEN_REGISTER loads value at lw.
 			}
 			else if (L4.com[0] == "sw")
 			{
@@ -673,7 +673,7 @@ struct MIPS_Architecture
 						// if second last command had some effects.
 						if (L2.com[2] == storecommands[storecommands.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
-							L3.val1 = L5.val1; // take from latch
+							L3.val1 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -682,7 +682,7 @@ struct MIPS_Architecture
 
 						if (L2.com[3] == storecommands[storecommands.size() - 2][1])
 						{
-							L3.val2 = L5.val1; // take from latch
+							L3.val2 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -697,7 +697,7 @@ struct MIPS_Architecture
 
 						if (L2.com[2] == storecommands[storecommands.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
-							L3.val1 = L4.val1; // take from latch
+							L3.val1 = L4.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -706,7 +706,7 @@ struct MIPS_Architecture
 
 						if (L2.com[3] == storecommands[storecommands.size() - 2][1])
 						{
-							L3.val2 = L4.val1; // take from latch
+							L3.val2 = L4.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -732,12 +732,12 @@ struct MIPS_Architecture
 							// if second last command had some effects.
 							if (L2.com[2] == storecommands[storecommands.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
-								L3.val1 = L5.val1; // take from latch
+								L3.val1 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 
 							if (L2.com[3] == storecommands[storecommands.size() - 3][1])
 							{
-								L3.val2 = L5.val1; // take from latch
+								L3.val2 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 
@@ -748,12 +748,12 @@ struct MIPS_Architecture
 
 							if (L2.com[2] == storecommands[storecommands.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
-								L3.val1 = L5.val1; // take from latch
+								L3.val1 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 
 							if (L2.com[3] == storecommands[storecommands.size() - 3][1])
 							{
-								L3.val2 = L5.val1; // take from latch
+								L3.val2 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 						else if (storecommands[storecommands.size() - 3][0] == "beq" || storecommands[storecommands.size() - 3][0] == "bne" || storecommands[storecommands.size() - 3][0] == "j" || storecommands[storecommands.size() - 3][0] == "sw")
@@ -787,7 +787,7 @@ struct MIPS_Architecture
 						// if second last command had some effects.
 						if (L2.com[1] == storecommands[storecommands.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
-							L3.val1 = L5.val1; // take from latch
+							L3.val1 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -796,7 +796,7 @@ struct MIPS_Architecture
 
 						if (L2.com[2] == storecommands[storecommands.size() - 2][1])
 						{
-							L3.val2 = L5.val1; // take from latch
+							L3.val2 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -811,7 +811,7 @@ struct MIPS_Architecture
 
 						if (L2.com[1] == storecommands[storecommands.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
-							L3.val1 = L4.val1; // take from latch
+							L3.val1 = L4.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -820,7 +820,7 @@ struct MIPS_Architecture
 
 						if (L2.com[2] == storecommands[storecommands.size() - 2][1])
 						{
-							L3.val2 = L4.val1; // take from latch
+							L3.val2 = L4.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -846,12 +846,12 @@ struct MIPS_Architecture
 							// if second last command had some effects.
 							if (L2.com[1] == storecommands[storecommands.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
-								L3.val1 = L5.val1; // take from latch
+								L3.val1 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 
 							if (L2.com[2] == storecommands[storecommands.size() - 3][1])
 							{
-								L3.val2 = L5.val1; // take from latch
+								L3.val2 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 
@@ -862,12 +862,12 @@ struct MIPS_Architecture
 
 							if (L2.com[1] == storecommands[storecommands.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
-								L3.val1 = L5.val1; // take from latch
+								L3.val1 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 
 							if (L2.com[2] == storecommands[storecommands.size() - 3][1])
 							{
-								L3.val2 = L5.val1; // take from latch
+								L3.val2 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 						else if (storecommands[storecommands.size() - 3][0] == "beq" || storecommands[storecommands.size() - 3][0] == "bne" || storecommands[storecommands.size() - 3][0] == "j" || storecommands[storecommands.size() - 3][0] == "sw")
@@ -914,7 +914,7 @@ struct MIPS_Architecture
 						// if second last command had some effects.
 						if (L2.com[2] == storecommands[storecommands.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
-							L3.val1 = L5.val1; // take from latch
+							L3.val1 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -928,7 +928,7 @@ struct MIPS_Architecture
 
 						if (L2.com[2] == storecommands[storecommands.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
-							L3.val1 = L4.val1; // take from latch
+							L3.val1 = L4.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -952,7 +952,7 @@ struct MIPS_Architecture
 							// if second last command had some effects.
 							if (L2.com[2] == storecommands[storecommands.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
-								L3.val1 = L5.val1; // take from latch
+								L3.val1 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 
@@ -962,7 +962,7 @@ struct MIPS_Architecture
 
 							if (L2.com[2] == storecommands[storecommands.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
-								L3.val1 = L5.val1; // take from latch
+								L3.val1 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 						else if (storecommands[storecommands.size() - 3][0] == "beq" || storecommands[storecommands.size() - 3][0] == "bne" || storecommands[storecommands.size() - 3][0] == "j" || storecommands[storecommands.size() - 3][0] == "sw")
@@ -1007,7 +1007,7 @@ struct MIPS_Architecture
 						// if second last command had some effects.
 						if (res == storecommands[storecommands.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
-							L3.val2 = L5.val1; // take from latch
+							L3.val2 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -1022,7 +1022,7 @@ struct MIPS_Architecture
 
 						if (res == storecommands[storecommands.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
-							L3.val2 = L4.val1; // take from latch
+							L3.val2 = L4.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -1046,7 +1046,7 @@ struct MIPS_Architecture
 							// if second last command had some effects.
 							if (res == storecommands[storecommands.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
-								L3.val2 = L5.val1; // take from latch
+								L3.val2 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 
@@ -1057,7 +1057,7 @@ struct MIPS_Architecture
 
 							if (res == storecommands[storecommands.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
-								L3.val1 = L5.val1; // take from latch
+								L3.val1 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 						else if (storecommands[storecommands.size() - 3][0] == "beq" || storecommands[storecommands.size() - 3][0] == "bne" || storecommands[storecommands.size() - 3][0] == "j" || storecommands[storecommands.size() - 3][0] == "sw")
@@ -1100,7 +1100,7 @@ struct MIPS_Architecture
 						// if second last command had some effects.
 						if (L2.com[1] == storecommands[storecommands.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
-							L3.val1 = L5.val1; // take from latch
+							L3.val1 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -1109,7 +1109,7 @@ struct MIPS_Architecture
 
 						if (res == storecommands[storecommands.size() - 2][1])
 						{
-							L3.val2 = L5.val1; // take from latch
+							L3.val2 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -1124,7 +1124,7 @@ struct MIPS_Architecture
 
 						if (L2.com[1] == storecommands[storecommands.size() - 2][1])
 						{					   // if there was a conflict with 2nd arg register.
-							L3.val1 = L4.val1; // take from latch
+							L3.val1 = L4.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -1133,7 +1133,7 @@ struct MIPS_Architecture
 
 						if (res == storecommands[storecommands.size() - 2][1])
 						{
-							L3.val2 = L4.val1; // take from latch
+							L3.val2 = L4.val1; // take from LATCH_BETWEEN_REGISTER
 						}
 						else
 						{
@@ -1159,12 +1159,12 @@ struct MIPS_Architecture
 							// if second last command had some effects.
 							if (L2.com[1] == storecommands[storecommands.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
-								L3.val1 = L5.val1; // take from latch
+								L3.val1 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 
 							if (res == storecommands[storecommands.size() - 3][1])
 							{
-								L3.val2 = L5.val1; // take from latch
+								L3.val2 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 
@@ -1175,12 +1175,12 @@ struct MIPS_Architecture
 
 							if (L2.com[1] == storecommands[storecommands.size() - 3][1])
 							{					   // if there was a conflict with 2nd arg register.
-								L3.val1 = L5.val1; // take from latch
+								L3.val1 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 
 							if (res == storecommands[storecommands.size() - 3][1])
 							{
-								L3.val2 = L5.val1; // take from latch
+								L3.val2 = L5.val1; // take from LATCH_BETWEEN_REGISTER
 							}
 						}
 						else if (storecommands[storecommands.size() - 3][0] == "beq" || storecommands[storecommands.size() - 3][0] == "bne" || storecommands[storecommands.size() - 3][0] == "j" || storecommands[storecommands.size() - 3][0] == "sw")

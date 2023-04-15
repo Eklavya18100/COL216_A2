@@ -21,7 +21,7 @@ using namespace std;
 
 struct MIPS_Architecture
 {
-	struct Latch{
+	struct LATCH_BETWEEN_REGISTER{
 		vector<string> com={};
 		int reg1=0;
 		int val1=0;
@@ -35,7 +35,7 @@ struct MIPS_Architecture
 	int data[MAX >> 2] = {0};
 	vector<vector<string>> commands;
 	vector<int> commandCount;
-    Latch L2,L3,L4,L5;
+    LATCH_BETWEEN_REGISTER L2,L3,L4,L5;
 	bool stall=false;
 	int stallTillCycle=0;
 
