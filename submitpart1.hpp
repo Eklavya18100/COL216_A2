@@ -324,67 +324,46 @@ struct MIPS_Architecture
         int NUMBER_OF_CYCLES = 0;
         vector<int> LIST_OF_COMMANDS;
         vector<vector<string>> CURRENT_COMMANDS_IN_PIPELINE;
-        runCycle(NUMBER_OF_CYCLES,LIST_OF_COMMANDS,CURRENT_COMMANDS_IN_PIPELINE);
+        EXECUTE_THE_PIPELINE(NUMBER_OF_CYCLES,LIST_OF_COMMANDS,CURRENT_COMMANDS_IN_PIPELINE);
 	}
 
-    void runCycle(int &NUMBER_OF_CYCLES, vector<int> &LIST_OF_COMMANDS,vector<vector<string>>&CURRENT_COMMANDS_IN_PIPELINE){
+    void EXECUTE_THE_PIPELINE(int &NUMBER_OF_CYCLES, vector<int> &LIST_OF_COMMANDS,vector<vector<string>>&CURRENT_COMMANDS_IN_PIPELINE){
 		
-		printRegisters(NUMBER_OF_CYCLES);
+		register_PRINT(NUMBER_OF_CYCLES);
         NUMBER_OF_CYCLES++;
-		bool storedword=false;
+		bool SW_CONTROL_SIGNAL=false;
 		bool branch=false;
-		int storedaddress=0;
-		int storedvalue=0;
-		//stage5               ---------------------------------
-
+		int SW_ADDRESS=0;
+		int SW_VALUE=0;
+		-
+	// <-----------------------------------------------------------WB----------------------------------------------->
 		if(L5.com.size()>0){
 			
-			
-			// if(NUMBER_OF_CYCLES==13){
-			// 	cout<<L5.com[0]<<L4.com[0]<<L3.com[0]<<endl;
-				
-			// }
-
-
 			if(L5.com[0]=="add" || L5.com[0]=="sub" || L5.com[0]=="mul" || L5.com[0]=="slt" || L5.com[0]=="addi"){
 					REGISTERS[L5.REGISTER_ONE]=L5.VALUE_ONE;
 			}
 			else if(L5.com[0]=="beq" || L5.com[0]=="bne" || L5.com[0]=="j"){
-				// if(L5.com[0]=="j"){
-				// 	//nothing.
-				// }
-				// else if(L5.VALUE_ONE!=-1){
-				// 	current_PC=L5.VALUE_ONE;												//go to this line. current_PC changes
-				// 	CURRENT_COMMANDS_IN_PIPELINE.clear();										//clear the stored commands.
-				// 	LIST_OF_COMMANDS.clear();										//clear the LIST_OF_COMMANDS.
-				// 	printRegisters(NUMBER_OF_CYCLES);								
-				// 	clearLatches();												//clear the latches to startover.
-        		// 	return runCycle(NUMBER_OF_CYCLES,LIST_OF_COMMANDS,CURRENT_COMMANDS_IN_PIPELINE);
-				// }
+				
 			}
 			else if(L5.com[0]=="sw"){
-				// storedword=true;
-				// data[L5.VALUE_TWO]=L5.VALUE_ONE;											//storage done
-				// storedaddress=L5.VALUE_TWO;
-				// storedvalue=L5.VALUE_ONE;
-				// cout<<"1 "<<L5.VALUE_TWO<<" "<<L5.VALUE_ONE<<endl;
+				
 			}
 			else if(L5.com[0]=="lw"){
-				REGISTERS[L5.VALUE_ONE]=data[L5.VALUE_TWO];										//loading done
+				REGISTERS[L5.VALUE_ONE]=data[L5.VALUE_TWO];										
 			}
 			else{
-				cout<<"something wrong occured in stage5!!";
+				cout<<"Error at WB";
 			}
 		}
 
-		//marks completion of commands.
-		if(CURRENT_COMMANDS_IN_PIPELINE.size()>0 && L5.com==CURRENT_COMMANDS_IN_PIPELINE[0]){						//if we found that some command has been completed in this cycle. Then remove it.
+		
+		if(CURRENT_COMMANDS_IN_PIPELINE.size()>0 && L5.com==CURRENT_COMMANDS_IN_PIPELINE[0]){						
 			CURRENT_COMMANDS_IN_PIPELINE.erase(CURRENT_COMMANDS_IN_PIPELINE.begin());
 			LIST_OF_COMMANDS.erase(LIST_OF_COMMANDS.begin());
 		}
 
 
-		//stage4   ---------------------------------------------------------------
+		// --------------------------------------------------------MEM-------------------------------------------------
 
 
 		if(L4.com.size()>0){
@@ -394,16 +373,13 @@ struct MIPS_Architecture
 				L5.REGISTER_TWO=L4.REGISTER_TWO;
 				L5.VALUE_ONE=L4.VALUE_ONE;
 				L5.VALUE_TWO=L4.VALUE_TWO;
-				storedword=true;
-				data[L5.VALUE_TWO]=L5.VALUE_ONE;											//storage done
-				storedaddress=L5.VALUE_TWO;
-				storedvalue=L5.VALUE_ONE;
+				SW_CONTROL_SIGNAL=true;
+				data[L5.VALUE_TWO]=L5.VALUE_ONE;											
+				SW_ADDRESS=L5.VALUE_TWO;
+				SW_VALUE=L5.VALUE_ONE;
 				
 				cout<<"1 "<<L5.VALUE_TWO<<" "<<L5.VALUE_ONE<<endl;
-				// if(CURRENT_COMMANDS_IN_PIPELINE.size()>0 && L4.com==CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size()-1]){						//if we found that some command has been completed in this cycle. Then remove it.
-				// 	CURRENT_COMMANDS_IN_PIPELINE.erase(CURRENT_COMMANDS_IN_PIPELINE.begin());
-				// 	LIST_OF_COMMANDS.erase(LIST_OF_COMMANDS.begin());
-				// }
+				
 			}
 			else{
 				L5.com=L4.com;
@@ -413,11 +389,11 @@ struct MIPS_Architecture
 				L5.VALUE_TWO=L4.VALUE_TWO;
 			}
 		}
-		if(!storedword){
+		if(!SW_CONTROL_SIGNAL){
 			cout<<"0"<<endl;
 		}
 
-		//Stage 3 ALU handling
+		// ------------------------------------------------------ALU------------------------------------------>
 		if(L3.com.size()>0){
 			if(L3.com[0]=="add"){
 				L4.com=L3.com;								//command
@@ -443,18 +419,9 @@ struct MIPS_Architecture
 			}
 			
 			else if(L3.com[0]=="beq" || L3.com[0]=="bne" || L3.com[0]=="j"){
-				L4.com=L3.com;												//stores the next_Program_Counter value. if -1 then the next value is current_PC+1.
+				L4.com=L3.com;						
 				if(L3.com[0]=="j"){
-					// L4.VALUE_ONE=address[L3.com[1]];
-					// current_PC=L4.VALUE_ONE;
-					// stall=true;
-					// stall_UNTIL_CYCLE=NUMBER_OF_CYCLES+1;
-					// if(CURRENT_COMMANDS_IN_PIPELINE.size()>0 && L2.com==CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size()-1]){
-					// 	LIST_OF_COMMANDS.pop_back();
-					// 	CURRENT_COMMANDS_IN_PIPELINE.pop_back();
-					// }
-					// L3.com.clear();
-					// L2.com.clear();
+					
 				}
 				else if(L3.com[0]=="beq"){
 					L4.VALUE_ONE=address[L3.com[3]];
@@ -515,20 +482,19 @@ struct MIPS_Architecture
 
 
 
-		//implement stalls.
+		
 
 
-		if(stall && stall_UNTIL_CYCLE!= NUMBER_OF_CYCLES){					//done
-			//nothing happens
+		if(stall && stall_UNTIL_CYCLE!= NUMBER_OF_CYCLES){				
+			/
 		}
 
-		else if(stall && stall_UNTIL_CYCLE==NUMBER_OF_CYCLES){				//done
+		else if(stall && stall_UNTIL_CYCLE==NUMBER_OF_CYCLES){				
 			stall=false;
 		}
 
 
 		else if(!stall && !L2.com.empty()){
-
 
 			if(L2.com[0]=="add" || L2.com[0]=="sub" || L2.com[0]=="mul" || L2.com[0]=="slt"){
 				if(CURRENT_COMMANDS_IN_PIPELINE.size()==2){
@@ -606,13 +572,13 @@ struct MIPS_Architecture
 			}
 
 
-			else if(L2.com[0]=="lw"){   // neither the address must have been changed earlier, nor the register used to check the address.
-				size_t pos1 = L2.com[2].find("("); // find the position of the opening parenthesis
+			else if(L2.com[0]=="lw"){   
+				size_t pos1 = L2.com[2].find("(");
 				string res="";
-				if (pos1 != string::npos) { // if opening parenthesis is found
-					size_t pos2 = L2.com[2].find(")", pos1+1); // find the position of the closing parenthesis after the opening parenthesis
-					if (pos2 != string::npos) { // if closing parenthesis is found
-						res = L2.com[2].substr(pos1+1, pos2-pos1-1); // extract the substring between the parentheses
+				if (pos1 != string::npos) { 
+					size_t pos2 = L2.com[2].find(")", pos1+1); 
+					if (pos2 != string::npos) { 
+						res = L2.com[2].substr(pos1+1, pos2-pos1-1); 
 					}
 				}
 
@@ -685,13 +651,13 @@ struct MIPS_Architecture
 			}
 
 
-			else if(L2.com[0]=="sw"){   //cases are neither argument REGISTER_ONE should have been chenged earlier nor the res.
+			else if(L2.com[0]=="sw"){  
 
-				size_t pos1 = L2.com[2].find("("); // find the position of the opening parenthesis
+				size_t pos1 = L2.com[2].find("("); 
 				string res="";
-				if (pos1 != string::npos) { // if opening parenthesis is found
-					size_t pos2 = L2.com[2].find(")", pos1+1); // find the position of the closing parenthesis after the opening parenthesis
-					if (pos2 != string::npos) { // if closing parenthesis is found
+				if (pos1 != string::npos) { 
+					size_t pos2 = L2.com[2].find(")", pos1+1); 
+					if (pos2 != string::npos) { 
 						res = L2.com[2].substr(pos1+1, pos2-pos1-1); // extract the substring between the parentheses
 					}
 				}
@@ -907,15 +873,15 @@ struct MIPS_Architecture
 			CURRENT_COMMANDS_IN_PIPELINE.push_back(command);
         }
 
-		// printRegisters(NUMBER_OF_CYCLES);
+		// register_PRINT(NUMBER_OF_CYCLES);
 		
 		if(CURRENT_COMMANDS_IN_PIPELINE.empty()){				//cycles are completed if no commmand left to execute.
-			printRegisters(NUMBER_OF_CYCLES);
-			if(!storedword){
+			register_PRINT(NUMBER_OF_CYCLES);
+			if(!SW_CONTROL_SIGNAL){
 				cout<<"0"<<endl;
 			}
 			else{
-				cout<<"1 "<<storedaddress<<" "<<storedvalue<<endl;
+				cout<<"1 "<<SW_ADDRESS<<" "<<SW_VALUE<<endl;
 			}
 			return;
 		}
@@ -945,12 +911,12 @@ struct MIPS_Architecture
 		// if(NUMBER_OF_CYCLES==4){
 		// 	cout<<CURRENT_COMMANDS_IN_PIPELINE.size()<<endl;
 		// }
-        runCycle(NUMBER_OF_CYCLES,LIST_OF_COMMANDS,CURRENT_COMMANDS_IN_PIPELINE);
+        EXECUTE_THE_PIPELINE(NUMBER_OF_CYCLES,LIST_OF_COMMANDS,CURRENT_COMMANDS_IN_PIPELINE);
     }
 
 
 	// print the register data in hexadecimal
-	void printRegisters(int clockCycle)
+	void register_PRINT(int clockCycle)
 	{
 		// cout << "Cycle number: " << clockCycle << '\n';
 		for (int i = 0; i < 32; ++i)
