@@ -865,7 +865,8 @@ struct MIPS_Architecture
 						qq++;
 					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sw"))
 					{
-						if (locateAddress(CURRENT_COMMANDS_IN_PIPELINE[0][2]) == locateAddress(L2.com[2]))
+						string addr = CURRENT_COMMANDS_IN_PIPELINE[0][2];
+						if (locateAddress(addr) == locateAddress(L2.com[2]))
 						{
 							stall = true;
 							stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
@@ -876,21 +877,21 @@ struct MIPS_Architecture
 				{
 					for (int i = 0; i < 1000; i++)
 						qq++;
-					if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sw")
+					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0], "sw"))
 					{
-						if (locateAddress(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][2]) == locateAddress(L2.com[2]))
+						string addr = CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][2];
+						if (locateAddress(addr) == locateAddress(L2.com[2]))
 						{
 							stall = true;
 							stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
 						}
 					}
-					if (!stall)
+					if (!stall && CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sw")
 					{
-						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sw")
+						string addr = CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][2];
+						if (locateAddress(addr) == locateAddress(L2.com[2]))
 						{
-							if (locateAddress(CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][2]) == locateAddress(L2.com[2]))
-							{
-							}
+							// do something if needed
 						}
 					}
 				}
