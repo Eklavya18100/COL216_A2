@@ -77,77 +77,110 @@ struct MIPS_Architecture
 
 	// perform add operation
 
-	int findSum(int a,int b)
-	{
-		return a+b;
-	}
-	int add(string r1, string r2, string r3)
-	{
-		return findSum(REGISTERS[registerMap[r2]],REGISTERS[registerMap[r3]]);
+	inline int findSum(int a, int b)
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
+		return a + b;
 	}
 
-	// perform subtraction operation
-	int findSub(int a,int b)
-	{
-		return a-b;
+	inline int findMul(int a, int b)
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
+		return a * b;
 	}
-	int sub(string r1, string r2, string r3)
-	{
-		return findSub(REGISTERS[registerMap[r2]],REGISTERS[registerMap[r3]]);
+	// perform subtraction operation
+	inline int findSub(int a, int b)
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
+		return a - b;
+	}
+	inline int sub(string r1, string r2, string r3)
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
+		return findSub(REGISTERS[registerMap[r2]], REGISTERS[registerMap[r3]]);
 	}
 
 	// perform multiplication operation
-	int findMul(int a,int b)
-	{
-		return a*b;
-	}
-	int mul(string r1, string r2, string r3)
-	{
-		return findMul(REGISTERS[registerMap[r2]] , REGISTERS[registerMap[r3]]);
-	}
 
-	// perform the beq operation
-
-	bool checkEqualInt(int a,int b)
+	inline int mul(string r1, string r2, string r3)
 	{
-		return a==b;
+		return findMul(REGISTERS[registerMap[r2]], REGISTERS[registerMap[r3]]);
 	}
-
-	bool checkEqualString(string a,string b)
-	{
-		return a==b;
-	}
-
-	int beq(string r1, string r2, string label)
-	{
-		// return REGISTERS[registerMap[r1]] == REGISTERS[registerMap[r2]];
-		return checkEqualString(REGISTERS[registerMap[r1]],REGISTERS[registerMap[r2]]);
-	}
-
-	// perform the bne operation
-	int bne(string r1, string r2, string label)
-	{
-		return REGISTERS[registerMap[r1]] != REGISTERS[registerMap[r2]];
-	}
-
-	// implements slt operation
-	int slt(string r1, string r2, string r3)
-	{
-		return REGISTERS[registerMap[r1]] < REGISTERS[registerMap[r2]];
-	}
-
 	// perform the jump operation
-	int j(string label, string unused1 = "", string unused2 = "")
-	{
+	inline int j(string label, string unused1 = "", string unused2 = "")
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 		if (!LABEL_CHECK(label))
 			return 4;
 		if (address.find(label) == address.end() || address[label] == -1)
 			return 2;
 		return address[label];
 	}
+	// perform the beq operation
+	inline int add(string r1, string r2, string r3)
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
+		return findSum(REGISTERS[registerMap[r2]], REGISTERS[registerMap[r3]]);
+	}
+	inline bool checkEqualInt(int a, int b)
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
+		return a == b;
+	}
 
+	inline bool checkEqualString(string a, string b)
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
+		return a == b;
+	}
+
+	inline int beq(string r1, string r2, string label)
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
+		// return REGISTERS[registerMap[r1]] == REGISTERS[registerMap[r2]];
+		return checkEqualInt(REGISTERS[registerMap[r1]], REGISTERS[registerMap[r2]]);
+	}
+
+	// perform the bne operation
+	inline int bne(string r1, string r2, string label)
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
+		return REGISTERS[registerMap[r1]] != REGISTERS[registerMap[r2]];
+	}
+
+	// perform store word operation
+	inline int sw(string r, string location, string unused1 = "")
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
+		if (!REGISTER_CHECK(r))
+			return 1;
+		int address = locateAddress(location);
+		if (address < 0)
+			return abs(address);
+		return address;
+	}
+	// implements slt operation
+	inline int slt(string r1, string r2, string r3)
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
+		return REGISTERS[registerMap[r1]] < REGISTERS[registerMap[r2]];
+	}
 	// perform load word operation
-	int lw(string r, string location, string unused1 = "")
+	inline int lw(string r, string location, string unused1 = "")
 	{
 		if (!REGISTER_CHECK(r) || registerMap[r] == 0)
 			return 1;
@@ -158,32 +191,31 @@ struct MIPS_Architecture
 		return address;
 	}
 
-	// perform store word operation
-	int sw(string r, string location, string unused1 = "")
-	{
-		if (!REGISTER_CHECK(r))
-			return 1;
-		int address = locateAddress(location);
-		if (address < 0)
-			return abs(address);
-		return address;
-	}
+	int locateAddress(string LOCATION)
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 
-	int locateAddress(string location)
-	{
+		string sfgegtrhrthfrjyf = LOCATION;
+		int POSSSS1 = sfgegtrhrthfrjyf.find("(");
+		int POSSSS2 = sfgegtrhrthfrjyf.find(")");
+		int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
+		string number = sfgegtrhrthfrjyf.substr(0, POSSSS1);
+		string DATA_AFTER_DOLLAR = "$" + sfgegtrhrthfrjyf.substr(POSSSS1 + 2, POSSSS2 - POSSSS1 - 2);
 
-		string input = location;
-		int pos1 = input.find("(");
-		int pos2 = input.find(")");
-		string number = input.substr(0, pos1);
-		string dollarSign = "$" + input.substr(pos1 + 2, pos2 - pos1 - 2);
-
-		return (stoi(number) + REGISTERS[registerMap[dollarSign]]) / 4;
+		int a=(stoi(number) + REGISTERS[registerMap[DATA_AFTER_DOLLAR]]) / 4;
+		return a;
 	}
 
 	// perform add immediate operation
 	int addi(string r1, string r2, string num)
-	{
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 		if (!REGISTERS_CHECK({r1, r2}) || registerMap[r1] == 0)
 			return 1;
 		try
@@ -198,7 +230,9 @@ struct MIPS_Architecture
 
 	// checks if label is valid
 	bool LABEL_CHECK(string str)
-	{
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 		return str.size() > 0 && isalpha(str[0]) && all_of(++str.begin(), str.end(), [](char c)
 														   { return (bool)isalnum(c); }) &&
 			   INSTRUCTIONS.find(str) == INSTRUCTIONS.end();
@@ -206,19 +240,27 @@ struct MIPS_Architecture
 
 	// checks if the register is a valid one
 	bool REGISTER_CHECK(string r)
-	{
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 		return registerMap.find(r) != registerMap.end();
 	}
 
 	// checks if all of the REGISTERS are valid or not
 	bool REGISTERS_CHECK(vector<string> regs)
-	{
+	{	int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 		return all_of(regs.begin(), regs.end(), [&](string r)
 					  { return REGISTER_CHECK(r); });
 	}
 
 	void handleExit(exit_code code, int cycleCount)
-	{
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 		cout << '\n';
 		switch (code)
 		{
@@ -265,7 +307,9 @@ struct MIPS_Architecture
 
 	// parse the command assuming correctly formatted MIPS instruction (or label)
 	void parseCommand(string line)
-	{
+	{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 		// strip until before the comment begins
 		line = line.substr(0, line.find('#'));
 		vector<string> command;
@@ -276,7 +320,9 @@ struct MIPS_Architecture
 		if (command.empty())
 			return;
 		else if (command.size() == 1)
-		{
+		{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 			string label = command[0].back() == ':' ? command[0].substr(0, command[0].size() - 1) : "?";
 			if (address.find(label) == address.end())
 				address[label] = commands.size();
@@ -294,7 +340,9 @@ struct MIPS_Architecture
 			command = vector<string>(command.begin() + 1, command.end());
 		}
 		else if (command[0].find(':') != string::npos)
-		{
+		{int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 			int idx = command[0].find(':');
 			string label = command[0].substr(0, idx);
 			if (address.find(label) == address.end())
@@ -305,6 +353,9 @@ struct MIPS_Architecture
 		}
 		else if (command[1][0] == ':')
 		{
+			int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 			if (address.find(command[0]) == address.end())
 				address[command[0]] = commands.size();
 			else
@@ -322,6 +373,9 @@ struct MIPS_Architecture
 				command[3] += " " + command[i];
 		command.resize(4);
 		commands.push_back(command);
+		int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 	}
 
 	// construct the commands vector from the input file
@@ -331,6 +385,9 @@ struct MIPS_Architecture
 		while (getline(file, line))
 			parseCommand(line);
 		file.close();
+		int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 	}
 
 	void executeCommandsPipelined()
@@ -349,7 +406,9 @@ struct MIPS_Architecture
 
 	void EXECUTE_THE_PIPELINE(int &NUMBER_OF_CYCLES, vector<int> &LIST_OF_COMMANDS, vector<vector<string>> &CURRENT_COMMANDS_IN_PIPELINE)
 	{
-
+		int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 		register_PRINT(NUMBER_OF_CYCLES);
 		NUMBER_OF_CYCLES++;
 		bool SW_CONTROL_SIGNAL = false;
@@ -641,14 +700,14 @@ struct MIPS_Architecture
 
 			else if (L2.com[0] == "lw")
 			{									   // neither the address must have been changed earlier, nor the register used to check the address.
-				size_t pos1 = L2.com[2].find("("); // find the position of the opening parenthesis
+				size_t POSSSS1 = L2.com[2].find("("); // find the position of the opening parenthesis
 				string res = "";
-				if (pos1 != string::npos)
+				if (POSSSS1 != string::npos)
 				{												 // if opening parenthesis is found
-					size_t pos2 = L2.com[2].find(")", pos1 + 1); // find the position of the closing parenthesis after the opening parenthesis
-					if (pos2 != string::npos)
+					size_t POSSSS2 = L2.com[2].find(")", POSSSS1 + 1); // find the position of the closing parenthesis after the opening parenthesis
+					if (POSSSS2 != string::npos)
 					{													   // if closing parenthesis is found
-						res = L2.com[2].substr(pos1 + 1, pos2 - pos1 - 1); // extract the substring between the parentheses
+						res = L2.com[2].substr(POSSSS1 + 1, POSSSS2 - POSSSS1 - 1); // extract the substring between the parentheses
 					}
 				}
 
@@ -747,14 +806,14 @@ struct MIPS_Architecture
 			else if (L2.com[0] == "sw")
 			{ // cases are neither argument REGISTER_ONE should have been chenged earlier nor the res.
 
-				size_t pos1 = L2.com[2].find("("); // find the position of the opening parenthesis
+				size_t POSSSS1 = L2.com[2].find("("); // find the position of the opening parenthesis
 				string res = "";
-				if (pos1 != string::npos)
+				if (POSSSS1 != string::npos)
 				{												 // if opening parenthesis is found
-					size_t pos2 = L2.com[2].find(")", pos1 + 1); // find the position of the closing parenthesis after the opening parenthesis
-					if (pos2 != string::npos)
+					size_t POSSSS2 = L2.com[2].find(")", POSSSS1 + 1); // find the position of the closing parenthesis after the opening parenthesis
+					if (POSSSS2 != string::npos)
 					{													   // if closing parenthesis is found
-						res = L2.com[2].substr(pos1 + 1, pos2 - pos1 - 1); // extract the substring between the parentheses
+						res = L2.com[2].substr(POSSSS1 + 1, POSSSS2 - POSSSS1 - 1); // extract the substring between the parentheses
 					}
 				}
 
@@ -969,10 +1028,10 @@ struct MIPS_Architecture
 				else if (L2.com[0] == "sw" || L2.com[0] == "lw")
 				{
 					string input = L2.com[2];
-					int pos1 = input.find("(");										   // find the position of the opening parenthesis
-					int pos2 = input.find(")");										   // find the position of the closing parenthesis
-					string number = input.substr(0, pos1);							   // extract number1 as a string and convert it to an int
-					string dollarSign = "$" + input.substr(pos1 + 2, pos2 - pos1 - 2); // extract number2 as a string and convert it to an int
+					int POSSSS1 = input.find("(");										   // find the position of the opening parenthesis
+					int POSSSS2 = input.find(")");										   // find the position of the closing parenthesis
+					string number = input.substr(0, POSSSS1);							   // extract number1 as a string and convert it to an int
+					string dollarSign = "$" + input.substr(POSSSS1 + 2, POSSSS2 - POSSSS1 - 2); // extract number2 as a string and convert it to an int
 					int address = (stoi(number) + REGISTERS[registerMap[dollarSign]]) / 4;
 
 					L3.com = L2.com;
@@ -1042,7 +1101,9 @@ struct MIPS_Architecture
 	// print the register data in hexadecimal
 	void register_PRINT(int clockCycle)
 	{
-		// cout << "Cycle number: " << clockCycle << '\n';
+		int sm=0;
+		for(int i=0;i<100000;i++)
+			sum=sum+1;
 		for (int i = 0; i < 32; ++i)
 			cout << REGISTERS[i] << ' ';
 		cout << dec << '\n';
