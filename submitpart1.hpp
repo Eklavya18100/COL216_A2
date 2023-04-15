@@ -100,6 +100,7 @@ struct MIPS_Architecture
 			sm += 1;
 		return a - b;
 	}
+	
 	inline int sub(string r1, string r2, string r3)
 	{
 		for (int i = 0; i < 100000; i++)
@@ -135,6 +136,7 @@ struct MIPS_Architecture
 			sm += 1;
 		return findSum(REGISTERS[registerMap[r2]], REGISTERS[registerMap[r3]]);
 	}
+
 	inline bool checkEqualInt(int a, int b)
 	{
 		for (int i = 0; i < 100000; i++)
@@ -416,18 +418,23 @@ struct MIPS_Architecture
 			sm += 1;
 	}
 
-	void executeCommandsPipelined()
+	void executePipelinedCommands()
 	{
+		// Check if the number of commands exceeds the maximum memory limit
 		if (commands.size() >= MAX / 4)
 		{
+			// If the limit is exceeded, exit with a memory error
 			handleExit(MEMORY_ERROR, 0);
 			return;
 		}
 
-		int NUMBER_OF_CYCLES = 0;
-		vector<int> LIST_OF_COMMANDS;
-		vector<vector<string>> CURRENT_COMMANDS_IN_PIPELINE;
-		EXECUTE_THE_PIPELINE(NUMBER_OF_CYCLES, LIST_OF_COMMANDS, CURRENT_COMMANDS_IN_PIPELINE);
+		// Initialize variables for the number of cycles, list of executed commands, and pipeline
+		int numCycles = 0;
+		vector<int> executedCommands;
+		vector<vector<string>> pipelineCommands;
+
+		// Execute the pipeline with the given variables
+		EXECUTE_THE_PIPELINE(numCycles, executedCommands, pipelineCommands);
 	}
 
 	void EXECUTE_THE_PIPELINE(int &NUMBER_OF_CYCLES, vector<int> &LIST_OF_COMMANDS, vector<vector<string>> &CURRENT_COMMANDS_IN_PIPELINE)
@@ -1078,7 +1085,7 @@ struct MIPS_Architecture
 
 		for (int i = 0; i < 100000; i++)
 			sm += 1;
-			vector<string> command;
+		vector<string> command;
 		// Check if there are more commands to execute and the pipeline is not stalled
 		if (current_PC < commands.size() && !stall)
 		{
