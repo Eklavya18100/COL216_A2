@@ -1104,53 +1104,51 @@ struct MIPS_Architecture
 			}
 
 			else if (L2.com[0] == "addi")
-			{
-				int sm = 0;
+			{ // addiint sm=0;
 				for (int i = 0; i < 100000; i++)
-				{
 					sm += 1;
-				}
-				if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2)
+				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 				{
-					const auto &first_cmd = CURRENT_COMMANDS_IN_PIPELINE[0];
-					if (std::any_of({"add", "sub", "mul", "slt", "addi", "lw"},
-									[reg = L2.com[2]](const std::string &cmd)
-									{
-										return cmd == reg;
-									}))
+					for (int i = 0; i < 1000; i++)
+						qq++;
+					if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "lw")
 					{
-						if (first_cmd[1] == L2.com[2])
+						if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[2])
 						{
 							stall = true;
-							stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + (first_cmd[0] == "sw" ? 1 : 2);
+							if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sw")
+							{
+								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+							}
+							else
+							{
+								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
+							}
 						}
 					}
 				}
-				if (!stall && CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
+				else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
 				{
-					const auto &second_last_cmd = CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2];
-					if (std::any_of({"add", "sub", "mul", "slt", "addi", "lw"},
-									[reg = L2.com[2]](const std::string &cmd)
-									{
-										return cmd == reg;
-									}))
+					if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "lw")
 					{
-						if (second_last_cmd[1] == L2.com[2])
+						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == L2.com[2])
 						{
 							stall = true;
-							stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + (second_last_cmd[0] == "sw" ? 1 : 2);
+							if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sw")
+							{
+								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+							}
+							else
+							{
+								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
+							}
 						}
 					}
-					if (!stall && CURRENT_COMMANDS_IN_PIPELINE.size() >= 4)
+					if (!stall)
 					{
-						const auto &third_last_cmd = CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3];
-						if (std::any_of({"add", "sub", "mul", "slt", "addi"},
-										[reg = L2.com[2]](const std::string &cmd)
-										{
-											return cmd == reg;
-										}))
+						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi")
 						{
-							if (third_last_cmd[1] == L2.com[2])
+							if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == L2.com[2])
 							{
 								stall = true;
 								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
