@@ -759,26 +759,28 @@ struct MIPS_Architecture
 					qq++;
 				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
 				{
-					if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "add") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sub") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "mul") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "slt") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "addi") || checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "lw"))
+					std::string opcode = CURRENT_COMMANDS_IN_PIPELINE[0][0];
+					std::string operand = CURRENT_COMMANDS_IN_PIPELINE[0][1];
+					bool is_stall_op = (opcode == "add" || opcode == "sub" || opcode == "mul" || opcode == "slt" || opcode == "addi" || opcode == "lw");
+
+					if (is_stall_op && (operand == L2.com[1] || operand == L2.com[2]))
 					{
 						for (int i = 0; i < 1000; i++)
 							qq++;
-						if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[1] || CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[2])
+						stall = true;
+						if (opcode == "sw")
 						{
-							stall = true;
-							if (checkEqualString(CURRENT_COMMANDS_IN_PIPELINE[0][0], "sw"))
-							{
-								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
-							}
-							else
-							{
-								for (int i = 0; i < 1000; i++)
-									qq++;
-								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
-							}
+							stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+						}
+						else
+						{
+							for (int i = 0; i < 1000; i++)
+								qq++;
+							stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
 						}
 					}
 				}
+
 				else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
 				{
 					for (int i = 0; i < 1000; i++)
