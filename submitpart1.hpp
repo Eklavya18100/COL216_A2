@@ -1107,55 +1107,56 @@ struct MIPS_Architecture
 			{ // addiint sm=0;
 				for (int i = 0; i < 100000; i++)
 					sm += 1;
-				if (CURRENT_COMMANDS_IN_PIPELINE.size() == 2)
-				{
-					for (int i = 0; i < 1000; i++)
-						qq++;
-					if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "lw")
-					{
-						if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[2])
-						{
-							stall = true;
-							if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sw")
-							{
-								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
-							}
-							else
-							{
-								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
-							}
-						}
-					}
-				}
-				else if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 3)
-				{
-					if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "lw")
-					{
-						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][1] == L2.com[2])
-						{
-							stall = true;
-							if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 2][0] == "sw")
-							{
-								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
-							}
-							else
-							{
-								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
-							}
-						}
-					}
-					if (!stall)
-					{
-						if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][0] == "addi")
-						{
-							if (CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 3][1] == L2.com[2])
-							{
-								stall = true;
-								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
-							}
-						}
-					}
-				}
+				const int MAX_PIPELINE_SIZE = 3;
+
+if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2 && CURRENT_COMMANDS_IN_PIPELINE.size() <= MAX_PIPELINE_SIZE)
+{
+    if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "lw")
+    {
+        if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[2])
+        {
+            stall = true;
+            if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sw")
+            {
+                stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+            }
+            else
+            {
+                stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
+            }
+        }
+    }
+    else if (CURRENT_COMMANDS_IN_PIPELINE.size() == MAX_PIPELINE_SIZE)
+    {
+        if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "lw")
+        {
+            if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][1] == L2.com[2])
+            {
+                stall = true;
+                if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "sw")
+                {
+                    stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+                }
+                else
+                {
+                    stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
+                }
+            }
+        }
+        if (!stall && CURRENT_COMMANDS_IN_PIPELINE.size() == MAX_PIPELINE_SIZE)
+        {
+            if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "addi")
+            {
+                if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][1] == L2.com[2])
+                {
+                    stall = true;
+                    stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+                }
+            }
+        }
+    }
+}
+
 			}
 
 			else if (L2.com[0] == "j")
