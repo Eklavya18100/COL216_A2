@@ -842,16 +842,18 @@ struct MIPS_Architecture
 			{
 				for (int i = 0; i < 1000; i++)
 					qq++;
-				size_t POSSSS1 = L2.com[2].find("("); // find the position of the opening parenthesis
+				size_t opening_paren_pos = L2.com[2].find("(");
 				string res = "";
-				if (POSSSS1 != string::npos)
-				{													   // if opening parenthesis is found
-					size_t POSSSS2 = L2.com[2].find(")", POSSSS1 + 1); // find the position of the closing parenthesis after the opening parenthesis
-					if (POSSSS2 != string::npos)
+				if (opening_paren_pos != string::npos)
+				{
+					size_t closing_paren_pos = L2.com[2].find(")", opening_paren_pos + 1);
+					if (closing_paren_pos != string::npos)
 					{
 						for (int i = 0; i < 1000; i++)
-							qq++;													// if closing parenthesis is found
-						res = L2.com[2].substr(POSSSS1 + 1, POSSSS2 - POSSSS1 - 1); // extract the substring between the parentheses
+						{
+							qq++;
+						}
+						res = L2.com[2].substr(opening_paren_pos + 1, closing_paren_pos - opening_paren_pos - 1);
 					}
 				}
 
