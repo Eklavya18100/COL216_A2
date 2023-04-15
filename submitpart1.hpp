@@ -28,8 +28,8 @@ struct MIPS_Architecture
 		int REGISTER_TWO=0;
 		int VALUE_TWO=0;
 	};
-	int registers[32] = {0}, PCcurr = 0, PCnext;																									//registers
-	unordered_map<string, function<int(MIPS_Architecture &, string, string, string)>> instructions;					//instructions
+	int REGISTERS[32] = {0}, current_PC = 0, next_Program_Counter;																									//REGISTERS
+	unordered_map<string, function<int(MIPS_Architecture &, string, string, string)>> INSTRUCTIONS;					//INSTRUCTIONS
 	unordered_map<string, int> registerMap, address;																						//Memory
 	static const int MAX = (1 << 20);
 	int data[MAX >> 2] = {0};
@@ -37,7 +37,7 @@ struct MIPS_Architecture
 	vector<int> commandCount;
     LATCH_BETWEEN_REGISTER L2,L3,L4,L5;
 	bool stall=false;
-	int stallTillCycle=0;
+	int stall_UNTIL_CYCLE=0;
 
 	enum exit_code
 	{
@@ -52,7 +52,7 @@ struct MIPS_Architecture
 	// constructor to initialise the instruction set
 	MIPS_Architecture(ifstream &file)
 	{
-		instructions = {{"add", &MIPS_Architecture::add}, {"sub", &MIPS_Architecture::sub}, {"mul", &MIPS_Architecture::mul}, {"beq", &MIPS_Architecture::beq}, {"bne", &MIPS_Architecture::bne}, {"slt", &MIPS_Architecture::slt}, {"j", &MIPS_Architecture::j}, {"lw", &MIPS_Architecture::lw}, {"sw", &MIPS_Architecture::sw}, {"addi", &MIPS_Architecture::addi}};
+		INSTRUCTIONS = {{"add", &MIPS_Architecture::add}, {"sub", &MIPS_Architecture::sub}, {"mul", &MIPS_Architecture::mul}, {"beq", &MIPS_Architecture::beq}, {"bne", &MIPS_Architecture::bne}, {"slt", &MIPS_Architecture::slt}, {"j", &MIPS_Architecture::j}, {"lw", &MIPS_Architecture::lw}, {"sw", &MIPS_Architecture::sw}, {"addi", &MIPS_Architecture::addi}};
 
 		for (int i = 0; i < 32; ++i)
 			registerMap["$" + to_string(i)] = i;
@@ -80,43 +80,43 @@ struct MIPS_Architecture
 	// perform add operation
 	int add(string r1, string r2, string r3)
 	{
-		return registers[registerMap[r2]]+registers[registerMap[r3]];
+		return REGISTERS[registerMap[r2]]+REGISTERS[registerMap[r3]];
 	}
 
 	// perform subtraction operation
 	int sub(string r1, string r2, string r3)
 	{
-		return registers[registerMap[r2]]-registers[registerMap[r3]];
+		return REGISTERS[registerMap[r2]]-REGISTERS[registerMap[r3]];
 	}
 
 	// perform multiplication operation
 	int mul(string r1, string r2, string r3)
 	{
-		return registers[registerMap[r2]]*registers[registerMap[r3]];
+		return REGISTERS[registerMap[r2]]*REGISTERS[registerMap[r3]];
 	}
 
 	// perform the beq operation
 	int beq(string r1, string r2, string label)
 	{
-		return registers[registerMap[r1]]==registers[registerMap[r2]];
+		return REGISTERS[registerMap[r1]]==REGISTERS[registerMap[r2]];
 	}
 
 	// perform the bne operation
 	int bne(string r1, string r2, string label)
 	{
-		return registers[registerMap[r1]]!=registers[registerMap[r2]];
+		return REGISTERS[registerMap[r1]]!=REGISTERS[registerMap[r2]];
 	}
 
 	// implements slt operation
 	int slt(string r1, string r2, string r3)
 	{
-		return registers[registerMap[r1]]<registers[registerMap[r2]];
+		return REGISTERS[registerMap[r1]]<REGISTERS[registerMap[r2]];
 	}
 
 	// perform the jump operation
 	int j(string label, string unused1 = "", string unused2 = "")
 	{
-		if (!checkLabel(label))
+		if (!LABEL_CHECK(label))
 			return 4;
 		if (address.find(label) == address.end() || address[label] == -1)
 			return 2;
@@ -126,7 +126,7 @@ struct MIPS_Architecture
 	// perform load word operation
 	int lw(string r, string location, string unused1 = "")
 	{
-		if (!checkRegister(r) || registerMap[r] == 0)
+		if (!REGISTER_CHECK(r) || registerMap[r] == 0)
 			return 1;
 		int address = locateAddress(location);
 		if (address < 0)
@@ -138,7 +138,7 @@ struct MIPS_Architecture
 	// perform store word operation
 	int sw(string r, string location, string unused1 = "")
 	{
-		if (!checkRegister(r))
+		if (!REGISTER_CHECK(r))
 			return 1;
 		int address = locateAddress(location);
 		if (address < 0)
@@ -150,22 +150,22 @@ struct MIPS_Architecture
 	{
 
 		string input = location;
-		int pos1 = input.find("("); // find the position of the opening parenthesis
-		int pos2 = input.find(")"); // find the position of the closing parenthesis
-		string number = input.substr(0, pos1); // extract number1 as a string and convert it to an int
-		string dollarSign = "$"+input.substr(pos1+2, pos2-pos1-2); // extract number2 as a string and convert it to an int
-		// cout<<"Here!!!!!!  "<<location<<"  "<<stoi(number)+registers[registerMap[dollarSign]]<<" "<<dollarSign<<endl;
-		return (stoi(number)+registers[registerMap[dollarSign]])/4;
+		int pos1 = input.find("("); 
+		int pos2 = input.find(")"); 
+		string number = input.substr(0, pos1); 
+		string dollarSign = "$"+input.substr(pos1+2, pos2-pos1-2);
+		
+		return (stoi(number)+REGISTERS[registerMap[dollarSign]])/4;
 	}
 
 	// perform add immediate operation
 	int addi(string r1, string r2, string num)
 	{
-		if (!checkRegisters({r1, r2}) || registerMap[r1] == 0)
+		if (!REGISTERS_CHECK({r1, r2}) || registerMap[r1] == 0)
 			return 1;
 		try
 		{
-			return registers[registerMap[r2]] + stoi(num);
+			return REGISTERS[registerMap[r2]] + stoi(num);
 		}
 		catch (exception &e)
 		{
@@ -174,24 +174,24 @@ struct MIPS_Architecture
 	}
 
 	// checks if label is valid
-	inline bool checkLabel(string str)
+	 bool LABEL_CHECK(string str)
 	{
 		return str.size() > 0 && isalpha(str[0]) && all_of(++str.begin(), str.end(), [](char c)
 														   { return (bool)isalnum(c); }) &&
-			   instructions.find(str) == instructions.end();
+			   INSTRUCTIONS.find(str) == INSTRUCTIONS.end();
 	}
 
 	// checks if the register is a valid one
-	inline bool checkRegister(string r)
+	 bool REGISTER_CHECK(string r)
 	{
 		return registerMap.find(r) != registerMap.end();
 	}
 
-	// checks if all of the registers are valid or not
-	bool checkRegisters(vector<string> regs)
+	// checks if all of the REGISTERS are valid or not
+	bool REGISTERS_CHECK(vector<string> regs)
 	{
 		return all_of(regs.begin(), regs.end(), [&](string r)
-						   { return checkRegister(r); });
+						   { return REGISTER_CHECK(r); });
 	}
 
 	/*
@@ -229,7 +229,7 @@ struct MIPS_Architecture
 		if (code != 0)
 		{
 			cerr << "Error encountered at:\n";
-			for (auto &s : commands[PCcurr])
+			for (auto &s : commands[current_PC])
 				cerr << s << ' ';
 			cerr << '\n';
 		}
@@ -239,7 +239,7 @@ struct MIPS_Architecture
 				cout << 4 * i << '-' << 4 * i + 3 << hex << ": " << data[i] << '\n'
 						  << dec;
 		cout << "\nTotal number of cycles: " << cycleCount << '\n';
-		cout << "Count of instructions executed:\n";
+		cout << "Count of INSTRUCTIONS executed:\n";
 		for (int i = 0; i < (int)commands.size(); ++i)
 		{
 			cout << commandCount[i] << " times:\t";
@@ -337,23 +337,23 @@ struct MIPS_Architecture
 	// 	// 	cout<<"\n\n";
 	// 	// }
 
-	// 	while (PCcurr < commands.size())
+	// 	while (current_PC < commands.size())
 	// 	{
 	// 		++clockCycles;
-	// 		vector<string> &command = commands[PCcurr];
-	// 		if (instructions.find(command[0]) == instructions.end())
+	// 		vector<string> &command = commands[current_PC];
+	// 		if (INSTRUCTIONS.find(command[0]) == INSTRUCTIONS.end())
 	// 		{
 	// 			handleExit(SYNTAX_ERROR, clockCycles);
 	// 			return;
 	// 		}
-	// 		exit_code ret = (exit_code) instructions[command[0]](*this, command[1], command[2], command[3]);
+	// 		exit_code ret = (exit_code) INSTRUCTIONS[command[0]](*this, command[1], command[2], command[3]);
 	// 		if (ret != SUCCESS)
 	// 		{
 	// 			handleExit(ret, clockCycles);
 	// 			return;
 	// 		}
-	// 		++commandCount[PCcurr];														//remembers which commadn is being executed.
-	// 		PCcurr = PCnext;
+	// 		++commandCount[current_PC];														//remembers which commadn is being executed.
+	// 		current_PC = next_Program_Counter;
 	// 		printRegisters(clockCycles);
 	// 	}
 	// 	handleExit(SUCCESS, clockCycles);
@@ -393,14 +393,14 @@ struct MIPS_Architecture
 
 
 			if(L5.com[0]=="add" || L5.com[0]=="sub" || L5.com[0]=="mul" || L5.com[0]=="slt" || L5.com[0]=="addi"){
-					registers[L5.REGISTER_ONE]=L5.VALUE_ONE;
+					REGISTERS[L5.REGISTER_ONE]=L5.VALUE_ONE;
 			}
 			else if(L5.com[0]=="beq" || L5.com[0]=="bne" || L5.com[0]=="j"){
 				// if(L5.com[0]=="j"){
 				// 	//nothing.
 				// }
 				// else if(L5.VALUE_ONE!=-1){
-				// 	PCcurr=L5.VALUE_ONE;												//go to this line. PCcurr changes
+				// 	current_PC=L5.VALUE_ONE;												//go to this line. current_PC changes
 				// 	storecommands.clear();										//clear the stored commands.
 				// 	commandList.clear();										//clear the commandlist.
 				// 	printRegisters(clockCycles);								
@@ -416,7 +416,7 @@ struct MIPS_Architecture
 				// cout<<"1 "<<L5.VALUE_TWO<<" "<<L5.VALUE_ONE<<endl;
 			}
 			else if(L5.com[0]=="lw"){
-				registers[L5.VALUE_ONE]=data[L5.VALUE_TWO];										//loading done
+				REGISTERS[L5.VALUE_ONE]=data[L5.VALUE_TWO];										//loading done
 			}
 			else{
 				cout<<"something wrong occured in stage5!!";
@@ -489,12 +489,12 @@ struct MIPS_Architecture
 			}
 			
 			else if(L3.com[0]=="beq" || L3.com[0]=="bne" || L3.com[0]=="j"){
-				L4.com=L3.com;												//stores the pcnext value. if -1 then the next value is pccurr+1.
+				L4.com=L3.com;												//stores the next_Program_Counter value. if -1 then the next value is current_PC+1.
 				if(L3.com[0]=="j"){
 					// L4.VALUE_ONE=address[L3.com[1]];
-					// PCcurr=L4.VALUE_ONE;
+					// current_PC=L4.VALUE_ONE;
 					// stall=true;
-					// stallTillCycle=clockCycles+1;
+					// stall_UNTIL_CYCLE=clockCycles+1;
 					// if(storecommands.size()>0 && L2.com==storecommands[storecommands.size()-1]){
 					// 	commandList.pop_back();
 					// 	storecommands.pop_back();
@@ -506,14 +506,14 @@ struct MIPS_Architecture
 					L4.VALUE_ONE=address[L3.com[3]];
 					
 					stall=true;
-					stallTillCycle=clockCycles+1;
+					stall_UNTIL_CYCLE=clockCycles+1;
 					if(storecommands.size()>0 && L2.com==storecommands[storecommands.size()-1]){
-						PCcurr--;
+						current_PC--;
 						commandList.pop_back();
 						storecommands.pop_back();
 					}
 					if(L3.VALUE_ONE==L3.VALUE_TWO){
-						PCcurr=L4.VALUE_ONE;
+						current_PC=L4.VALUE_ONE;
 					}
 					
 					L3.com.clear();
@@ -523,14 +523,14 @@ struct MIPS_Architecture
 				else if(L3.com[0]=="bne"){
 					L4.VALUE_ONE=address[L3.com[3]];
 					stall=true;
-					stallTillCycle=clockCycles+1;
+					stall_UNTIL_CYCLE=clockCycles+1;
 					if(storecommands.size()>0 && L2.com==storecommands[storecommands.size()-1]){
-						PCcurr--;
+						current_PC--;
 						commandList.pop_back();
 						storecommands.pop_back();
 					}
 					if(L3.VALUE_ONE!=L3.VALUE_TWO){
-						PCcurr=L4.VALUE_ONE;
+						current_PC=L4.VALUE_ONE;
 					}
 					L3.com.clear();
 					L2.com.clear();
@@ -564,11 +564,11 @@ struct MIPS_Architecture
 		//implement stalls.
 
 
-		if(stall && stallTillCycle!= clockCycles){					//done
+		if(stall && stall_UNTIL_CYCLE!= clockCycles){					//done
 			//nothing happens
 		}
 
-		else if(stall && stallTillCycle==clockCycles){				//done
+		else if(stall && stall_UNTIL_CYCLE==clockCycles){				//done
 			stall=false;
 		}
 
@@ -582,10 +582,10 @@ struct MIPS_Architecture
 						if(storecommands[0][1]==L2.com[2] || storecommands[0][1] == L2.com[3]){
 							stall=true;
 							if(storecommands[0][0]=="sw"){
-								stallTillCycle=clockCycles+1;
+								stall_UNTIL_CYCLE=clockCycles+1;
 							}
 							else{
-								stallTillCycle=clockCycles+2;
+								stall_UNTIL_CYCLE=clockCycles+2;
 							}
 						}
 					}
@@ -595,10 +595,10 @@ struct MIPS_Architecture
 						if(storecommands[storecommands.size()-2][1]==L2.com[2] || storecommands[storecommands.size()-2][1] == L2.com[3]){
 							stall=true;
 							if(storecommands[storecommands.size()-2][0]=="sw"){
-								stallTillCycle=clockCycles+1;
+								stall_UNTIL_CYCLE=clockCycles+1;
 							}
 							else{
-								stallTillCycle=clockCycles+2;
+								stall_UNTIL_CYCLE=clockCycles+2;
 							}
 						}
 					}
@@ -606,7 +606,7 @@ struct MIPS_Architecture
 						if(storecommands[storecommands.size()-3][0]=="add" || storecommands[storecommands.size()-3][0]=="sub" || storecommands[storecommands.size()-3][0]=="mul" || storecommands[storecommands.size()-3][0]=="slt" || storecommands[storecommands.size()-3][0]=="addi"){
 							if(storecommands[storecommands.size()-3][1]==L2.com[2] || storecommands[storecommands.size()-3][1] == L2.com[3]){
 								stall=true;
-								stallTillCycle=clockCycles+1;
+								stall_UNTIL_CYCLE=clockCycles+1;
 							}
 						}
 					}
@@ -620,10 +620,10 @@ struct MIPS_Architecture
 						if(storecommands[0][1]==L2.com[1] || storecommands[0][1] == L2.com[2]){
 							stall=true;
 							if(storecommands[0][0]=="sw"){
-								stallTillCycle=clockCycles+1;
+								stall_UNTIL_CYCLE=clockCycles+1;
 							}
 							else{
-								stallTillCycle=clockCycles+2;
+								stall_UNTIL_CYCLE=clockCycles+2;
 							}
 						}
 					}
@@ -633,10 +633,10 @@ struct MIPS_Architecture
 						if(storecommands[storecommands.size()-2][1]==L2.com[1] || storecommands[storecommands.size()-2][1] == L2.com[2]){
 							stall=true;
 							if(storecommands[storecommands.size()-2][0]=="sw"){
-								stallTillCycle=clockCycles+1;
+								stall_UNTIL_CYCLE=clockCycles+1;
 							}
 							else{
-								stallTillCycle=clockCycles+2;
+								stall_UNTIL_CYCLE=clockCycles+2;
 							}
 						}
 					}
@@ -644,7 +644,7 @@ struct MIPS_Architecture
 						if(storecommands[storecommands.size()-3][0]=="add" || storecommands[storecommands.size()-3][0]=="sub" || storecommands[storecommands.size()-3][0]=="mul" || storecommands[storecommands.size()-3][0]=="slt" || storecommands[storecommands.size()-3][0]=="addi"){
 							if(storecommands[storecommands.size()-3][1]==L2.com[1] || storecommands[storecommands.size()-3][1] == L2.com[2]){
 								stall=true;
-								stallTillCycle=clockCycles+1;
+								stall_UNTIL_CYCLE=clockCycles+1;
 							}
 						}
 					}
@@ -668,7 +668,7 @@ struct MIPS_Architecture
 					if(storecommands[0][0]=="sw"){
 						if(locateAddress(storecommands[0][2])==locateAddress(L2.com[2])){
 							stall=true;
-							stallTillCycle=clockCycles+1;
+							stall_UNTIL_CYCLE=clockCycles+1;
 						}
 					}
 				}
@@ -676,20 +676,20 @@ struct MIPS_Architecture
 					if(storecommands[storecommands.size()-2][0]=="sw"){
 						if(locateAddress(storecommands[storecommands.size()-2][2])==locateAddress(L2.com[2])){
 							stall=true;
-							stallTillCycle=clockCycles+1;
+							stall_UNTIL_CYCLE=clockCycles+1;
 						}
 					}
 					if(!stall){
 						if(storecommands[storecommands.size()-3][0]=="sw"){
 							if(locateAddress(storecommands[storecommands.size()-3][2])==locateAddress(L2.com[2])){
 								// stall=true;
-								// stallTillCycle=clockCycles+1;
+								// stall_UNTIL_CYCLE=clockCycles+1;
 							}
 						}
 					}
 				}
 
-				if(stall && stallTillCycle==clockCycles+2){         /////????????????
+				if(stall && stall_UNTIL_CYCLE==clockCycles+2){         /////????????????
 					//no need
 				}
 				else{
@@ -698,10 +698,10 @@ struct MIPS_Architecture
 							if(storecommands[0][1]==res){
 								stall=true;
 								if(storecommands[0][0]=="sw"){
-									stallTillCycle=clockCycles+1;
+									stall_UNTIL_CYCLE=clockCycles+1;
 								}
 								else{
-									stallTillCycle=clockCycles+2;
+									stall_UNTIL_CYCLE=clockCycles+2;
 								}
 							}
 						}
@@ -711,10 +711,10 @@ struct MIPS_Architecture
 							if(storecommands[storecommands.size()-2][1]==res){
 								stall=true;
 								if(storecommands[storecommands.size()-2][0]=="sw"){
-									stallTillCycle=clockCycles+1;
+									stall_UNTIL_CYCLE=clockCycles+1;
 								}
 								else{
-									stallTillCycle=clockCycles+2;
+									stall_UNTIL_CYCLE=clockCycles+2;
 								}
 							}
 						}
@@ -722,7 +722,7 @@ struct MIPS_Architecture
 							if(storecommands[storecommands.size()-3][0]=="add" || storecommands[storecommands.size()-3][0]=="sub" || storecommands[storecommands.size()-3][0]=="mul" || storecommands[storecommands.size()-3][0]=="slt" || storecommands[storecommands.size()-3][0]=="addi"){
 								if(storecommands[storecommands.size()-3][1]==res){
 									stall=true;
-									stallTillCycle=clockCycles+1;
+									stall_UNTIL_CYCLE=clockCycles+1;
 								}
 							}
 						}
@@ -748,10 +748,10 @@ struct MIPS_Architecture
 						if(storecommands[0][1]==L2.com[1]){
 							stall=true;
 							if(storecommands[0][0]=="sw"){
-								stallTillCycle=clockCycles+1;
+								stall_UNTIL_CYCLE=clockCycles+1;
 							}
 							else{
-								stallTillCycle=clockCycles+2;
+								stall_UNTIL_CYCLE=clockCycles+2;
 							}
 						}
 					}
@@ -762,10 +762,10 @@ struct MIPS_Architecture
 						if(storecommands[storecommands.size()-2][1]==L2.com[1]){
 							stall=true;
 							if(storecommands[storecommands.size()-2][0]=="sw"){
-								stallTillCycle=clockCycles+1;
+								stall_UNTIL_CYCLE=clockCycles+1;
 							}
 							else{
-								stallTillCycle=clockCycles+2;
+								stall_UNTIL_CYCLE=clockCycles+2;
 							}
 						}
 					}
@@ -773,13 +773,13 @@ struct MIPS_Architecture
 						if(storecommands[storecommands.size()-3][0]=="add" || storecommands[storecommands.size()-3][0]=="sub" || storecommands[storecommands.size()-3][0]=="mul" || storecommands[storecommands.size()-3][0]=="slt" || storecommands[storecommands.size()-3][0]=="addi"){
 							if(storecommands[storecommands.size()-3][1]==L2.com[1]){
 								stall=true;
-								stallTillCycle=clockCycles+1;
+								stall_UNTIL_CYCLE=clockCycles+1;
 							}
 						}
 					}
 				}
 
-				if(stall && stallTillCycle==clockCycles+2){
+				if(stall && stall_UNTIL_CYCLE==clockCycles+2){
 					//no need
 				}
 				else{
@@ -788,10 +788,10 @@ struct MIPS_Architecture
 							if(storecommands[0][1]==res){
 								stall=true;
 								if(storecommands[0][0]=="sw"){
-									stallTillCycle=clockCycles+1;
+									stall_UNTIL_CYCLE=clockCycles+1;
 								}
 								else{
-									stallTillCycle=clockCycles+2;
+									stall_UNTIL_CYCLE=clockCycles+2;
 								}
 							}
 						}
@@ -801,10 +801,10 @@ struct MIPS_Architecture
 							if(storecommands[storecommands.size()-2][1]==res){
 								stall=true;
 								if(storecommands[storecommands.size()-2][0]=="sw"){
-									stallTillCycle=clockCycles+1;
+									stall_UNTIL_CYCLE=clockCycles+1;
 								}
 								else{
-									stallTillCycle=clockCycles+2;
+									stall_UNTIL_CYCLE=clockCycles+2;
 								}
 							}
 						}
@@ -812,7 +812,7 @@ struct MIPS_Architecture
 							if(storecommands[storecommands.size()-3][0]=="add" || storecommands[storecommands.size()-3][0]=="sub" || storecommands[storecommands.size()-3][0]=="mul" || storecommands[storecommands.size()-3][0]=="slt" || storecommands[storecommands.size()-3][0]=="addi" ){
 								if(storecommands[storecommands.size()-3][1]==res){
 									stall=true;
-									stallTillCycle=clockCycles+1;
+									stall_UNTIL_CYCLE=clockCycles+1;
 								}
 							}
 						}
@@ -827,10 +827,10 @@ struct MIPS_Architecture
 						if(storecommands[0][1]==L2.com[2]){
 							stall=true;
 							if(storecommands[0][0]=="sw"){
-								stallTillCycle=clockCycles+1;
+								stall_UNTIL_CYCLE=clockCycles+1;
 							}
 							else{
-								stallTillCycle=clockCycles+2;
+								stall_UNTIL_CYCLE=clockCycles+2;
 							}
 						}
 					}
@@ -840,10 +840,10 @@ struct MIPS_Architecture
 						if(storecommands[storecommands.size()-2][1]==L2.com[2]){
 							stall=true;
 							if(storecommands[storecommands.size()-2][0]=="sw"){
-								stallTillCycle=clockCycles+1;
+								stall_UNTIL_CYCLE=clockCycles+1;
 							}
 							else{
-								stallTillCycle=clockCycles+2;
+								stall_UNTIL_CYCLE=clockCycles+2;
 							}
 						}
 					}
@@ -851,7 +851,7 @@ struct MIPS_Architecture
 						if(storecommands[storecommands.size()-3][0]=="add" || storecommands[storecommands.size()-3][0]=="sub" || storecommands[storecommands.size()-3][0]=="mul" || storecommands[storecommands.size()-3][0]=="slt" || storecommands[storecommands.size()-3][0]=="addi"){
 							if(storecommands[storecommands.size()-3][1]==L2.com[2]){
 								stall=true;
-								stallTillCycle=clockCycles+1;
+								stall_UNTIL_CYCLE=clockCycles+1;
 							}
 						}
 					}
@@ -883,24 +883,24 @@ struct MIPS_Architecture
 					L3.com=L2.com;
 					L3.REGISTER_ONE=registerMap[L2.com[2]];
 					L3.REGISTER_TWO=registerMap[L2.com[3]];
-					L3.VALUE_ONE=registers[L3.REGISTER_ONE];
-					L3.VALUE_TWO=registers[L3.REGISTER_TWO];
+					L3.VALUE_ONE=REGISTERS[L3.REGISTER_ONE];
+					L3.VALUE_TWO=REGISTERS[L3.REGISTER_TWO];
 				}
 
 				else if(L2.com[0]=="beq" || L2.com[0]=="bne"){
 					L3.com=L2.com;
 					L3.REGISTER_ONE=registerMap[L2.com[1]];
 					L3.REGISTER_TWO=registerMap[L2.com[2]];
-					L3.VALUE_ONE=registers[L3.REGISTER_ONE];
-					L3.VALUE_TWO=registers[L3.REGISTER_TWO];
+					L3.VALUE_ONE=REGISTERS[L3.REGISTER_ONE];
+					L3.VALUE_TWO=REGISTERS[L3.REGISTER_TWO];
 				}
 
 				else if(L2.com[0]=="j"){
 					L3.com=L2.com;
 					L3.VALUE_ONE=address[L2.com[1]];
-					PCcurr=L3.VALUE_ONE;
+					current_PC=L3.VALUE_ONE;
 					stall=true;
-					stallTillCycle=clockCycles+1;
+					stall_UNTIL_CYCLE=clockCycles+1;
 					if(storecommands.size()>0 && L2.com==storecommands[storecommands.size()-1]){
 						commandList.pop_back();
 						storecommands.pop_back();
@@ -915,11 +915,11 @@ struct MIPS_Architecture
 					int pos2 = input.find(")"); // find the position of the closing parenthesis
 					string number = input.substr(0, pos1); // extract number1 as a string and convert it to an int
 					string dollarSign = "$"+input.substr(pos1+2, pos2-pos1-2); // extract number2 as a string and convert it to an int
-					int address = (stoi(number)+registers[registerMap[dollarSign]])/4;
+					int address = (stoi(number)+REGISTERS[registerMap[dollarSign]])/4;
 
 					L3.com=L2.com;
 					L3.REGISTER_ONE=registerMap[L2.com[1]];		//register number
-					L3.VALUE_ONE=registers[L3.REGISTER_ONE];        //register 1 value.
+					L3.VALUE_ONE=REGISTERS[L3.REGISTER_ONE];        //register 1 value.
 					L3.VALUE_TWO=address;            	//address
 				}
 
@@ -927,8 +927,8 @@ struct MIPS_Architecture
 					L3.com=L2.com;
 					L3.REGISTER_ONE=registerMap[L2.com[1]];
 					L3.REGISTER_TWO=registerMap[L2.com[2]];
-					L3.VALUE_ONE=registers[L3.REGISTER_ONE];
-					L3.VALUE_TWO=registers[L3.REGISTER_TWO];
+					L3.VALUE_ONE=REGISTERS[L3.REGISTER_ONE];
+					L3.VALUE_TWO=REGISTERS[L3.REGISTER_TWO];
 				}
 
 				else{
@@ -940,16 +940,16 @@ struct MIPS_Architecture
 		// else keep stalling
 
 		vector<string> command;
-        if(PCcurr < commands.size() && !stall){			//push new command into pipeline
+        if(current_PC < commands.size() && !stall){			//push new command into pipeline
 			// cout<<clockCycles<<" "<<stall<<endl;
-			command = commands[PCcurr];
-			if (instructions.find(command[0]) == instructions.end())
+			command = commands[current_PC];
+			if (INSTRUCTIONS.find(command[0]) == INSTRUCTIONS.end())
 			{
 				handleExit(SYNTAX_ERROR, clockCycles);
 				return;
 			}
 
-			commandList.push_back(PCcurr);
+			commandList.push_back(current_PC);
 			storecommands.push_back(command);
         }
 
@@ -967,9 +967,9 @@ struct MIPS_Architecture
 		}
 
 		//Stage 1 IF Stage -----------------------------------------------------
-		if(PCcurr<commands.size() && !stall){
+		if(current_PC<commands.size() && !stall){
 			L2.com=command;
-			PCcurr++;
+			current_PC++;
 		}
 		// if(stall){
 		// 	cout<<"Here!! in "<<clockCycles<<endl;
@@ -1000,7 +1000,7 @@ struct MIPS_Architecture
 	{
 		// cout << "Cycle number: " << clockCycle << '\n';
 		for (int i = 0; i < 32; ++i)
-			cout << registers[i] << ' ';
+			cout << REGISTERS[i] << ' ';
 		cout << dec << '\n';
 	}
 
