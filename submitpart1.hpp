@@ -1109,60 +1109,57 @@ struct MIPS_Architecture
 					sm += 1;
 				const int MAX_PIPELINE_SIZE = 3;
 
-if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2 && CURRENT_COMMANDS_IN_PIPELINE.size() <= MAX_PIPELINE_SIZE)
-{
-    if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "lw")
-    {
-        if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[2])
-        {
-            stall = true;
-            if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sw")
-            {
-                stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
-            }
-            else
-            {
-                stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
-            }
-        }
-    }
-    else if (CURRENT_COMMANDS_IN_PIPELINE.size() == MAX_PIPELINE_SIZE)
-    {
-        if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "lw")
-        {
-            if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][1] == L2.com[2])
-            {
-                stall = true;
-                if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "sw")
-                {
-                    stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
-                }
-                else
-                {
-                    stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
-                }
-            }
-        }
-        if (!stall && CURRENT_COMMANDS_IN_PIPELINE.size() == MAX_PIPELINE_SIZE)
-        {
-            if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "addi")
-            {
-                if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][1] == L2.com[2])
-                {
-                    stall = true;
-                    stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
-                }
-            }
-        }
-    }
-}
-
+				if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2 && CURRENT_COMMANDS_IN_PIPELINE.size() <= MAX_PIPELINE_SIZE)
+				{
+					if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[0][0] == "lw")
+					{
+						if (CURRENT_COMMANDS_IN_PIPELINE[0][1] == L2.com[2])
+						{
+							stall = true;
+							if (CURRENT_COMMANDS_IN_PIPELINE[0][0] == "sw")
+							{
+								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+							}
+							else
+							{
+								stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
+							}
+						}
+					}
+					else if (CURRENT_COMMANDS_IN_PIPELINE.size() == MAX_PIPELINE_SIZE)
+					{
+						if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "addi" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "lw")
+						{
+							if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][1] == L2.com[2])
+							{
+								stall = true;
+								if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 2][0] == "sw")
+								{
+									stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+								}
+								else
+								{
+									stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 2;
+								}
+							}
+						}
+						if (!stall && CURRENT_COMMANDS_IN_PIPELINE.size() == MAX_PIPELINE_SIZE)
+						{
+							if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "add" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "sub" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "mul" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "slt" || CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][0] == "addi")
+							{
+								if (CURRENT_COMMANDS_IN_PIPELINE[MAX_PIPELINE_SIZE - 3][1] == L2.com[2])
+								{
+									stall = true;
+									stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
+								}
+							}
+						}
+					}
+				}
 			}
 
 			else if (L2.com[0] == "j")
 			{
-				for (int i = 0; i < 1000; i++)
-					qq++;
 			}
 
 			else
@@ -1177,10 +1174,10 @@ if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2 && CURRENT_COMMANDS_IN_PIPELINE.siz
 			sm += 1;
 		if (!stall)
 		{
-			if (L2.com.size() > 0)
+			if (!L2.com.empty())
 			{
-
-				if (checkEqualString(L2.com[0], "add") || checkEqualString(L2.com[0], "sub") || checkEqualString(L2.com[0], "mul") || checkEqualString(L2.com[0], "slt"))
+				if (checkEqualString(L2.com[0], "add") || checkEqualString(L2.com[0], "sub") ||
+					checkEqualString(L2.com[0], "mul") || checkEqualString(L2.com[0], "slt"))
 				{
 					L3.com = L2.com;
 					L3.REGISTER_ONE = registerMap[L2.com[2]];
@@ -1188,7 +1185,6 @@ if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2 && CURRENT_COMMANDS_IN_PIPELINE.siz
 					L3.VALUE_ONE = REGISTERS[L3.REGISTER_ONE];
 					L3.VALUE_TWO = REGISTERS[L3.REGISTER_TWO];
 				}
-
 				else if (checkEqualString(L2.com[0], "beq") || checkEqualString(L2.com[0], "bne"))
 				{
 					L3.com = L2.com;
@@ -1197,7 +1193,6 @@ if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2 && CURRENT_COMMANDS_IN_PIPELINE.siz
 					L3.VALUE_ONE = REGISTERS[L3.REGISTER_ONE];
 					L3.VALUE_TWO = REGISTERS[L3.REGISTER_TWO];
 				}
-
 				else if (checkEqualString(L2.com[0], "j"))
 				{
 					L3.com = L2.com;
@@ -1205,7 +1200,7 @@ if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2 && CURRENT_COMMANDS_IN_PIPELINE.siz
 					current_PC = L3.VALUE_ONE;
 					stall = true;
 					stall_UNTIL_CYCLE = NUMBER_OF_CYCLES + 1;
-					if (CURRENT_COMMANDS_IN_PIPELINE.size() > 0 && L2.com == CURRENT_COMMANDS_IN_PIPELINE[CURRENT_COMMANDS_IN_PIPELINE.size() - 1])
+					if (!CURRENT_COMMANDS_IN_PIPELINE.empty() && L2.com == CURRENT_COMMANDS_IN_PIPELINE.back())
 					{
 						LIST_OF_COMMANDS.pop_back();
 						CURRENT_COMMANDS_IN_PIPELINE.pop_back();
@@ -1213,22 +1208,19 @@ if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2 && CURRENT_COMMANDS_IN_PIPELINE.siz
 					L3.com.clear();
 					L2.com.clear();
 				}
-
 				else if (checkEqualString(L2.com[0], "sw") || checkEqualString(L2.com[0], "lw"))
 				{
 					string input = L2.com[2];
-					int POSSSS1 = input.find("(");												// find the position of the opening parenthesis
-					int POSSSS2 = input.find(")");												// find the position of the closing parenthesis
-					string number = input.substr(0, POSSSS1);									// extract number1 as a string and convert it to an int
-					string dollarSign = "$" + input.substr(POSSSS1 + 2, POSSSS2 - POSSSS1 - 2); // extract number2 as a string and convert it to an int
+					int POSSSS1 = input.find("(");
+					int POSSSS2 = input.find(")");
+					string number = input.substr(0, POSSSS1);
+					string dollarSign = "$" + input.substr(POSSSS1 + 2, POSSSS2 - POSSSS1 - 2);
 					int address = (stoi(number) + REGISTERS[registerMap[dollarSign]]) / 4;
-
 					L3.com = L2.com;
-					L3.REGISTER_ONE = registerMap[L2.com[1]];  // register number
-					L3.VALUE_ONE = REGISTERS[L3.REGISTER_ONE]; // register 1 value.
-					L3.VALUE_TWO = address;					   // address
+					L3.REGISTER_ONE = registerMap[L2.com[1]];
+					L3.VALUE_ONE = REGISTERS[L3.REGISTER_ONE];
+					L3.VALUE_TWO = address;
 				}
-
 				else if (checkEqualString(L2.com[0], "addi"))
 				{
 					L3.com = L2.com;
@@ -1237,7 +1229,6 @@ if (CURRENT_COMMANDS_IN_PIPELINE.size() >= 2 && CURRENT_COMMANDS_IN_PIPELINE.siz
 					L3.VALUE_ONE = REGISTERS[L3.REGISTER_ONE];
 					L3.VALUE_TWO = REGISTERS[L3.REGISTER_TWO];
 				}
-
 				else
 				{
 					cout << "Error";
